@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="jar" name="adp-profiler">
+    <property environment="env"/>
+    <property name="target" value="1.7"/>
+    <property name="source" value="1.7"/>
+	<path id="adp-profiler.classpath">
+		<fileset id="jars" dir="lib">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+    <target name="init">
+        <mkdir dir="classes"/>
+        <copy includeemptydirs="false" todir="classes">
+            <fileset dir="src" excludes="**/*.launch, **/*.java"/>
+        </copy>
+    </target>
+	
+    <target description="Clean all generated files from the distribution" name="clean">
+        <delete dir="classes"/>
+    	<delete file="adp-profiler.jar"/>
+    </target>
+	
+    <target description="Build the java classes for the Demonstration application" depends="init" name="build">
+        <javac debug="true" debuglevel="lines,vars,source" destdir="classes" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="adp-profiler.classpath"/>
+        </javac>
+    </target>
+	
+	<target description="Build the adp-profiler JAR archive" depends="clean,build" name="jar">
+		<pathconvert property="classpath" refid="adp-profiler.classpath" pathsep=" " dirsep="/">
+			<map from="${basedir}${file.separator}" to="" />
+		</pathconvert>
+		
+		
+		
+		<copy todir="classes/META-INF">
+		    <fileset dir="${basedir}/META-INF"/>
+		</copy>
+
+		<jar destfile="adp-profiler.jar" basedir="classes">
+			<manifest>
+				<attribute name="Built-By" value="Aaron McGrath"/>
+			</manifest>
+		</jar>
+		<delete dir="classes/lib"/>
+   		<echo>JAR file built OK. Run the Application with:</echo>
+		<echo>    java -jar adp-profiler.jar</echo>
+    </target>
+	
+</project>
