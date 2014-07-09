@@ -44,15 +44,10 @@ public class WorkflowAspect {
       MessageProcessStep step = new MessageProcessStep();
       step.setMessageId(messageId);
       step.setStepInstanceId(uniqueId);
-      /*
-       * generate a suffix that distinguishes steps (for our example),
-       * and serves as a process duration too
-       */
-      long suffix = (long)( Math.random() * 10000);
-      step.setStepName(workflowClass + "-" + (int) (suffix / 1000));
+
+      step.setStepName(workflowClass);
       step.setStepType(StepType.WORKFLOW);
       step.setOrder(new MessageStepIncrementor().generate(messageId));
-      step.setTimeTakenMs(suffix);
       Date now = new Date();
       step.setTimeStarted(now.getTime());
       message.addMetadata("ENTRY_TIMESTAMP", new SimpleDateFormat("d MMM yyyy HH:mm:ss 'Z'").format(now));
@@ -69,7 +64,7 @@ public class WorkflowAspect {
       consumerStep.setStepType(StepType.CONSUMER);
       consumerStep.setOrder(new MessageStepIncrementor().generate(messageId));
       consumerStep.setMessage(translator.translate(message));
-      consumerStep.setTimeTakenMs(suffix);
+      consumerStep.setTimeStarted(now.getTime());
 
       this.sendEvent(consumerStep);
 
@@ -89,7 +84,12 @@ public class WorkflowAspect {
       String key = messageId + workflowClass + uniqueId;
       ProcessStep step = waitingForCompletion.get(key);
 
-      //step.setTimeTakenMs(new Date().getTime() - step.getTimeStarted());
+      /*
+       * calculate the actual time taken; then add the (slightly) random
+       * offset/suffix (purely to differentiate the many workflow types
+       * in New Relic)
+       */
+      step.setTimeTakenMs(new Date().getTime() - step.getTimeStarted());
 
       waitingForCompletion.remove(key);
       this.sendEvent(step);
