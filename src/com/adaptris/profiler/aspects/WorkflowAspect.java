@@ -31,7 +31,7 @@ public class WorkflowAspect {
 
   private static Map<String, ProcessStep> waitingForCompletion = new HashMap<String, ProcessStep>();
 
-  @Before("call(void workflowStart(com.adaptris.core.AdaptrisMessage))  && within(com.adaptris.core..*)")
+  @Before("call(void workflowStart(com.adaptris.core.AdaptrisMessage)) && within(com.adaptris.core..*)")
   public synchronized void beforeService(JoinPoint jp) {
     try {
       DefaultSerializableMessageTranslator translator = new DefaultSerializableMessageTranslator();
@@ -74,7 +74,7 @@ public class WorkflowAspect {
     }
   }
 
-  @After("call(void workflowEnd(com.adaptris.core.AdaptrisMessage, com.adaptris.core.AdaptrisMessage))  && within(com.adaptris.core..*)")
+  @After("call(void workflowEnd(com.adaptris.core.AdaptrisMessage, com.adaptris.core.AdaptrisMessage)) && within(com.adaptris.core..*)")
   public synchronized void afterService(JoinPoint jp) {
     try {
       String workflowClass = jp.getTarget().getClass().getSimpleName();
@@ -84,11 +84,6 @@ public class WorkflowAspect {
       String key = messageId + workflowClass + uniqueId;
       ProcessStep step = waitingForCompletion.get(key);
 
-      /*
-       * calculate the actual time taken; then add the (slightly) random
-       * offset/suffix (purely to differentiate the many workflow types
-       * in New Relic)
-       */
       step.setTimeTakenMs(new Date().getTime() - step.getTimeStarted());
 
       waitingForCompletion.remove(key);

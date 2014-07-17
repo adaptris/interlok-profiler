@@ -28,7 +28,7 @@ public class ProducerAspect {
 
   protected transient Log log = LogFactory.getLog(this.getClass().getName());
 
-  @Before("call(void produce(com.adaptris.core.AdaptrisMessage, com.adaptris.core.ProduceDestination))  && within(com.adaptris.core..*)")
+  @Before("call(void produce(com.adaptris.core.AdaptrisMessage, com.adaptris.core.ProduceDestination)) && within(com.adaptris.core..*)")
   public synchronized void beforeService(JoinPoint jp) {
     try {
       DefaultSerializableMessageTranslator translator = new DefaultSerializableMessageTranslator();
@@ -56,7 +56,7 @@ public class ProducerAspect {
     }
   }
 
-  @After("call(void produce(com.adaptris.core.AdaptrisMessage, com.adaptris.core.ProduceDestination))  && within(com.adaptris.core..*)")
+  @After("call(void produce(com.adaptris.core.AdaptrisMessage, com.adaptris.core.ProduceDestination)) && within(com.adaptris.core..*)")
   public synchronized void afterService(JoinPoint jp) {
     try {
       String producerClass = jp.getTarget().getClass().getSimpleName();

@@ -28,7 +28,7 @@ public class ServiceAspect {
 
   private static Map<String, ProcessStep> waitingForCompletion = new HashMap<String, ProcessStep>();
 
-  @Before("call(void doService(com.adaptris.core.AdaptrisMessage))  && within(com.adaptris.core..*)")
+  @Before("call(void doService(com.adaptris.core.AdaptrisMessage)) && within(com.adaptris.core..*)")
   public synchronized void beforeService(JoinPoint jp) {
     try {
       DefaultSerializableMessageTranslator translator = new DefaultSerializableMessageTranslator();
@@ -56,7 +56,7 @@ public class ServiceAspect {
     }
   }
 
-  @After("call(void doService(com.adaptris.core.AdaptrisMessage))  && within(com.adaptris.core..*)")
+  @After("call(void doService(com.adaptris.core.AdaptrisMessage)) && within(com.adaptris.core..*)")
   public synchronized void afterService(JoinPoint jp) {
     try {
       String serviceClass = jp.getTarget().getClass().getSimpleName();
