@@ -30,6 +30,7 @@
     <property name="tests.output.dir" value="${basedir}/testoutput"/>
     <property name="html.tests.output.dir" value="${tests.output.dir}/html"/>
     <property name="jar.version" value="${today}"/>
+    <property name="no.obfuscation" value="true"/>
     <property name="example-xml.build.dir"  value="${build.dir}/example-xml"/>
 
     <property name="javac.include.classes"  value="**/*.java" />
