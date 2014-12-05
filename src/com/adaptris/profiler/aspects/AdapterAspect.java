@@ -15,13 +15,13 @@ public class AdapterAspect {
   
   @Before("execution(* com.adaptris.core.Adapter.start())")
   public synchronized void afterAdapterStart(JoinPoint jp) throws Exception {
-    log.debug("BEFORE ADAPTER START");
+    log.trace("Profiler : Before Adapter Start");
     PluginFactory.getInstance().getPlugin().start();
   }
   
   @Before("call(void stop()) && within(com.adaptris.core.Adapter)")
   public synchronized void beforeAdapterStop(JoinPoint jp) throws Exception {
-    log.debug("BEFORE ADAPTER STOP");
+    log.trace("Profiler : Before Adapter Stop");
     PluginFactory.getInstance().getPlugin().stop();
   }
 }

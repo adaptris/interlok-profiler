@@ -4,12 +4,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.DefaultSerializableMessageTranslator;
@@ -24,7 +24,7 @@ import com.adaptris.profiler.client.PluginFactory;
 @Aspect
 public class ServiceAspect {
 
-  protected transient Log log = LogFactory.getLog(this.getClass().getName());
+  protected transient Logger log = LoggerFactory.getLogger(this.getClass());
 
   private static Map<String, ProcessStep> waitingForCompletion = new HashMap<String, ProcessStep>();
 
@@ -49,10 +49,9 @@ public class ServiceAspect {
 
       String key = messageId + serviceClass + uniqueId;
       waitingForCompletion.put(key, step);
-
-      log.debug("BEFORE SERVICE (" + serviceClass + "(" + uniqueId + "): " + messageId);
+      log.trace("Before Service ({}({}) : {}", serviceClass, uniqueId, messageId);
     } catch (Exception e) {
-      log.error(e);
+      log.error("", e);
     }
   }
 
@@ -72,9 +71,9 @@ public class ServiceAspect {
       waitingForCompletion.remove(key);
       this.sendEvent(step);
 
-      log.debug("AFTER SERVICE (" + serviceClass + "(" + uniqueId + "): " + messageId);
+      log.trace("After Service ({}({}) : {}", serviceClass, uniqueId, messageId);
     } catch (Exception e) {
-      log.error(e);
+      log.error("", e);
     }
   }
 
