@@ -27,7 +27,7 @@ public interface ProcessStep {
   /**
    * Get the time taken to process the step.
    * 
-   * @return the time taken; the difference between {@link System#nanoTime()} and {@link #getTimeStarted()}
+   * @return the time taken; the difference between {@link System#currentTimeMillis()} and {@link #getTimeStarted()}
    */
   public long getTimeTakenMs();
   
@@ -36,7 +36,7 @@ public interface ProcessStep {
   /**
    * Get when the process step was started.
    * 
-   * @return when the process step was started; represented by {@link System#nanoTime()}
+   * @return when the process step was started; represented by {@link System#currentTimeMillis()}
    */
   public long getTimeStarted();
 

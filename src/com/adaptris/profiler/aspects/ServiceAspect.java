@@ -43,7 +43,7 @@ public class ServiceAspect {
       step.setStepName(serviceClass);
       step.setStepType(StepType.SERVICE);
       step.setOrder(new MessageStepIncrementor().generate(messageId));
-      step.setTimeStarted(System.nanoTime());
+      step.setTimeStarted(System.currentTimeMillis());
       step.setMessage(translator.translate(message));
 
       String key = messageId + serviceClass + uniqueId;
@@ -64,7 +64,7 @@ public class ServiceAspect {
       String key = messageId + serviceClass + uniqueId;
       ProcessStep step = waitingForCompletion.get(key);
 
-      long difference = System.nanoTime() - step.getTimeStarted();
+      long difference = System.currentTimeMillis() - step.getTimeStarted();
       step.setTimeTakenMs(difference);
 
       waitingForCompletion.remove(key);

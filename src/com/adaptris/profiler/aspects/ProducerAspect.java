@@ -43,7 +43,7 @@ public class ProducerAspect {
       step.setStepName(producerClass);
       step.setStepType(StepType.PRODUCER);
       step.setOrder(new MessageStepIncrementor().generate(messageId));
-      step.setTimeStarted(System.nanoTime());
+      step.setTimeStarted(System.currentTimeMillis());
       step.setMessage(translator.translate(message));
 
       String key = messageId + producerClass + uniqueId;
@@ -64,7 +64,7 @@ public class ProducerAspect {
 
       String key = messageId + producerClass + uniqueId;
       ProcessStep step = waitingForCompletion.get(key);
-      long difference = System.nanoTime() - step.getTimeStarted();
+      long difference = System.currentTimeMillis() - step.getTimeStarted();
       step.setTimeTakenMs(difference);
 
       waitingForCompletion.remove(key);

@@ -49,7 +49,7 @@ public class WorkflowAspect {
       step.setStepType(StepType.WORKFLOW);
       step.setOrder(new MessageStepIncrementor().generate(messageId));
       Date now = new Date();
-      step.setTimeStarted(System.nanoTime());
+      step.setTimeStarted(System.currentTimeMillis());
       message.addMetadata("ENTRY_TIMESTAMP", new SimpleDateFormat("d MMM yyyy HH:mm:ss 'Z'").format(now));
       step.setMessage(translator.translate(message));
 
@@ -64,7 +64,7 @@ public class WorkflowAspect {
       consumerStep.setStepType(StepType.CONSUMER);
       consumerStep.setOrder(new MessageStepIncrementor().generate(messageId));
       consumerStep.setMessage(translator.translate(message));
-      consumerStep.setTimeStarted(System.nanoTime());
+      consumerStep.setTimeStarted(System.currentTimeMillis());
 
       this.sendEvent(consumerStep);
       log.trace("Before Workflow ({}({}) : {}", workflowClass, uniqueId, messageId);
@@ -82,7 +82,7 @@ public class WorkflowAspect {
 
       String key = messageId + workflowClass + uniqueId;
       ProcessStep step = waitingForCompletion.get(key);
-      long difference = System.nanoTime() - step.getTimeStarted();
+      long difference = System.currentTimeMillis() - step.getTimeStarted();
       step.setTimeTakenMs(difference);
 
       waitingForCompletion.remove(key);
