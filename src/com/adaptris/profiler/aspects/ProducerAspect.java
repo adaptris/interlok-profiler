@@ -1,6 +1,5 @@
 package com.adaptris.profiler.aspects;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,7 +43,7 @@ public class ProducerAspect {
       step.setStepName(producerClass);
       step.setStepType(StepType.PRODUCER);
       step.setOrder(new MessageStepIncrementor().generate(messageId));
-      step.setTimeTakenMs(new Date().getTime());
+      step.setTimeStarted(System.nanoTime());
       step.setMessage(translator.translate(message));
 
       String key = messageId + producerClass + uniqueId;
@@ -65,9 +64,8 @@ public class ProducerAspect {
 
       String key = messageId + producerClass + uniqueId;
       ProcessStep step = waitingForCompletion.get(key);
-
-      long startTime = step.getTimeTakenMs();
-      step.setTimeTakenMs(new Date().getTime() - startTime);
+      long difference = System.nanoTime() - step.getTimeStarted();
+      step.setTimeTakenMs(difference);
 
       waitingForCompletion.remove(key);
       this.sendEvent(step);

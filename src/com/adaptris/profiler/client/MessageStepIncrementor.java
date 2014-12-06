@@ -6,8 +6,8 @@ public class MessageStepIncrementor implements StepIncrementor {
 
   private static final int MAX_ARRAY_SIZE = 1000;
   
-  public static ArrayList<String> messageList = new ArrayList<String>();
-  public static ArrayList<Integer> messageStepCount = new ArrayList<Integer>();
+  private static ArrayList<String> messageList = new ArrayList<String>();
+  private static ArrayList<Integer> messageStepCount = new ArrayList<Integer>();
     
   @Override
   public synchronized long generate(String messageId) {
