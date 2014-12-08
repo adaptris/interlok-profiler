@@ -48,7 +48,7 @@ public class ProducerAspect {
 
       String key = messageId + producerClass + uniqueId;
       waitingForCompletion.put(key, step);
-      log.trace("Before Produce ({}({}) : {}", producerClass, uniqueId, messageId);
+      log.trace("Before Produce ({}({})) : {}", producerClass, uniqueId, messageId);
 
     } catch (Exception e) {
       log.error("", e);
@@ -69,7 +69,7 @@ public class ProducerAspect {
 
       waitingForCompletion.remove(key);
       this.sendEvent(step);
-      log.trace("After Produce ({}({}) : {}", producerClass, uniqueId, messageId);
+      log.trace("After Produce ({}({})) : {}", producerClass, uniqueId, messageId);
     } catch (Exception e) {
       log.error("", e);
     }

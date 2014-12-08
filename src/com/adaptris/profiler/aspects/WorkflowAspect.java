@@ -67,7 +67,7 @@ public class WorkflowAspect {
       consumerStep.setTimeStarted(System.currentTimeMillis());
 
       this.sendEvent(consumerStep);
-      log.trace("Before Workflow ({}({}) : {}", workflowClass, uniqueId, messageId);
+      log.trace("Before Workflow ({}({})) : {}", workflowClass, uniqueId, messageId);
     } catch (Exception e) {
       log.error("", e);
     }
@@ -88,7 +88,7 @@ public class WorkflowAspect {
       waitingForCompletion.remove(key);
       this.sendEvent(step);
 
-      log.trace("After Workflow ({}({}) : {}", workflowClass, uniqueId, messageId);
+      log.trace("After Workflow ({}({})) : {}", workflowClass, uniqueId, messageId);
     } catch (Exception e) {
       log.error("", e);
     }

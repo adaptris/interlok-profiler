@@ -8,6 +8,12 @@ import org.slf4j.LoggerFactory;
 
 import com.adaptris.profiler.ProfilerSettings;
 
+/**
+ * Factory for managing plugin instances.
+ * 
+ * @author amcgrath
+ * 
+ */
 public abstract class PluginFactory {
 
   private static PluginFactory instance;
@@ -32,6 +38,11 @@ public abstract class PluginFactory {
     return instance;
   }
 
+  /**
+   * Get the plugin.
+   * 
+   * @return the client plugin instance that should be used by the aspects.
+   */
   public abstract ClientPlugin getPlugin();
 
   private static class NoOpFactory extends PluginFactory {

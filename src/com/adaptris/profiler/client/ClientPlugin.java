@@ -4,6 +4,12 @@ import java.util.List;
 
 import com.adaptris.profiler.InterlokProfilerPlugin;
 
+/**
+ * Plugin that is created by {@link PluginFactory}
+ * 
+ * @author amcgrath
+ * 
+ */
 public interface ClientPlugin extends InterlokProfilerPlugin {
 
   /**

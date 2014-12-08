@@ -6,7 +6,7 @@ import java.util.Properties;
 public class ProfilerSettings {
   
   private static final String PROPERTIES_RESOURCE = "adp-profiler.properties";
-  public static final Properties PROPERTIES;
+  private static final Properties PROPERTIES;
   
   static {
     PROPERTIES = new Properties();

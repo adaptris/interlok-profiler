@@ -1,30 +1,41 @@
 package com.adaptris.profiler.client;
 
-import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class MessageStepIncrementor implements StepIncrementor {
 
-  private static final int MAX_ARRAY_SIZE = 1000;
-  
-  private static ArrayList<String> messageList = new ArrayList<String>();
-  private static ArrayList<Integer> messageStepCount = new ArrayList<Integer>();
-    
+  private static final int MAX_ARRAY_SIZE = 1024;
+  private static transient Map<String, AtomicLong> messages = new FixedSizeMap<String, AtomicLong>();
+
   @Override
   public synchronized long generate(String messageId) {
-    int index = messageList.indexOf(messageId);
-    if(index >= 0) {
-      messageStepCount.set(index, messageStepCount.get(index) + 1);
-      
-      return messageStepCount.get(index);
-    } else {
-      if(messageList.size() >= MAX_ARRAY_SIZE) {
-        messageList.remove(0);
-        messageStepCount.remove(0);
-      }
-      messageList.add(messageId);
-      messageStepCount.add(1);
-      
-      return 1;
+    long result;
+    AtomicLong current = messages.get(messageId);
+    if (current != null) {
+      result = current.incrementAndGet();
+    }
+    else {
+      current = new AtomicLong();
+      messages.put(messageId, current);
+      result = current.incrementAndGet();
+    }
+    return result;
+  }
+
+  private static class FixedSizeMap<K, V> extends LinkedHashMap<K, V> {
+
+    private static final long serialVersionUID = 2011031601L;
+
+    // Default to access order, so that when removeEldest is triggered we act like a LRU cache.
+    public FixedSizeMap() {
+      super(16, 0.75f, true);
+    }
+
+    @Override
+    protected boolean removeEldestEntry(Map.Entry eldest) {
+      return size() > MAX_ARRAY_SIZE;
     }
   }
 

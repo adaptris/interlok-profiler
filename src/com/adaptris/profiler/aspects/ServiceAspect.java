@@ -48,7 +48,7 @@ public class ServiceAspect {
 
       String key = messageId + serviceClass + uniqueId;
       waitingForCompletion.put(key, step);
-      log.trace("Before Service ({}({}) : {}", serviceClass, uniqueId, messageId);
+      log.trace("Before Service ({}({})) : {}", serviceClass, uniqueId, messageId);
     } catch (Exception e) {
       log.error("", e);
     }
@@ -70,7 +70,7 @@ public class ServiceAspect {
       waitingForCompletion.remove(key);
       this.sendEvent(step);
 
-      log.trace("After Service ({}({}) : {}", serviceClass, uniqueId, messageId);
+      log.trace("After Service ({}({})) : {}", serviceClass, uniqueId, messageId);
     } catch (Exception e) {
       log.error("", e);
     }

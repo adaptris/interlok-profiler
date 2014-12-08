@@ -4,6 +4,11 @@ import com.adaptris.core.SerializableAdaptrisMessage;
 
 public interface ProcessStep {
 
+  /**
+   * Get the name of the step which is generally the classname of the component.
+   * 
+   * @return the step name.
+   */
   public String getStepName();
   
   /**
@@ -13,6 +18,11 @@ public interface ProcessStep {
    */
   public String getStepInstanceId();
   
+  /**
+   * Get the message ID associated with the step.
+   * 
+   * @return the message id.
+   */
   public String getMessageId();
   
   /**
@@ -22,6 +32,12 @@ public interface ProcessStep {
    */
   public StepType getStepType();
   
+  /**
+   * Get the sequence number of this process step.
+   * 
+   * @return the sequence number; note that this sequence number may be reset under high load and is not guaranteed to preserve the
+   *         order.
+   */
   public long getOrder();
   
   /**
@@ -40,6 +56,12 @@ public interface ProcessStep {
    */
   public long getTimeStarted();
 
+  /**
+   * Get a copy of the message associated with the step.
+   * 
+   * @return the message; note that when processing arbitrarily large messages via {@link com.adaptris.core.lms.FileBackedMessage};
+   *         then this may contain no data.
+   */
   public SerializableAdaptrisMessage getMessage();
   
 }
