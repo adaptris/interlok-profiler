@@ -50,7 +50,7 @@ public class WorkflowAspect {
       step.setOrder(new MessageStepIncrementor().generate(messageId));
       Date now = new Date();
       step.setTimeStarted(System.currentTimeMillis());
-      message.addMetadata("ENTRY_TIMESTAMP", new SimpleDateFormat("d MMM yyyy HH:mm:ss 'Z'").format(now));
+      message.addMetadata("ENTRY_TIMESTAMP", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").format(now));
       step.setMessage(translator.translate(message));
 
       String key = messageId + workflowClass + uniqueId;
@@ -95,7 +95,7 @@ public class WorkflowAspect {
   }
 
   private void sendEvent(ProcessStep step) throws Exception {
-    for(EventReceiver receiver : PluginFactory.getInstance().getReceivers()) {
+    for (EventReceiver receiver : PluginFactory.getInstance().getPlugin().getReceivers()) {
       receiver.onEvent(step);
     }
   }

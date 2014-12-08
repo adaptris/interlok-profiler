@@ -77,7 +77,7 @@ public class ServiceAspect {
   }
 
   private void sendEvent(ProcessStep step) throws Exception {
-    for(EventReceiver receiver : PluginFactory.getInstance().getReceivers()) {
+    for (EventReceiver receiver : PluginFactory.getInstance().getPlugin().getReceivers()) {
       receiver.onEvent(step);
     }
   }
