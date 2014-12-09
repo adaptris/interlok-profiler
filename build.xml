@@ -76,24 +76,10 @@
 
   <target name="jar.resources" depends="prepare">
     <!-- build the manifest file -->
-    <property name="manifest.jar.version" value="${jar.version}"/>
-    <manifest file="${build.dir}/Manifest.mf">
-      <attribute name="Manifest-Version" value="1.0"/>
-      <attribute name="Build-Version" value="${manifest.jar.version}"/>
-      <attribute name="Built-By" value="${user.name}"/>
-      <section name="${manifest.section.name}">
-        <attribute name="Specification-Title" value="${manifest.title}"/>
-        <attribute name="Specification-Version" value="${ivy.publish.revision}"/>
-        <attribute name="Specification-Vendor" value="${manifest.vendor}"/>
-        <attribute name="Implementation-Version" value="${ivy.publish.revision}"/>
-        <attribute name="Implementation-Title" value="${manifest.title}"/>
-        <attribute name="Implementation-Vendor" value="${manifest.vendor}"/>
-      </section>
-    </manifest>
-
+    <adapter:create-manifest file="${build.dir}/Manifest.mf" title="Interlok Profiler"/>
   	<copy todir="${classes.build.dir}/META-INF">
 	    <fileset dir="${basedir}/META-INF"/>
-	</copy>
+	  </copy>
   </target>
 
   <target name="jar" depends="compile, jar.resources" description="Build a jar file">
