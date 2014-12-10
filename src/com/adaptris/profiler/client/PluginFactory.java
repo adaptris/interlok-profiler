@@ -1,6 +1,6 @@
 package com.adaptris.profiler.client;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -47,9 +47,11 @@ public abstract class PluginFactory {
 
   private static class NoOpFactory extends PluginFactory {
 
+    private NoOpPlugin plugin = new NoOpPlugin();
+
     @Override
     public ClientPlugin getPlugin() {
-      return new NoOpPlugin();
+      return plugin;
     }
   }
 
@@ -65,7 +67,7 @@ public abstract class PluginFactory {
 
     @Override
     public List<EventReceiver> getReceivers() {
-      return new ArrayList<EventReceiver>();
+      return Collections.emptyList();
     }
   }
 }
