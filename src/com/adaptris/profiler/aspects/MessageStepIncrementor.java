@@ -10,7 +10,7 @@ class MessageStepIncrementor implements StepIncrementor {
   private static transient Map<String, AtomicLong> messages = new FixedSizeMap<String, AtomicLong>();
 
   @Override
-  public synchronized long generate(String messageId) {
+  public long generate(String messageId) {
     long result;
     AtomicLong current = messages.get(messageId);
     if (current != null) {
