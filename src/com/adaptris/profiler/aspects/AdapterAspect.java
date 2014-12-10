@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.adaptris.profiler.client.PluginFactory;
 
 @Aspect
-public class AdapterAspect {
+public class AdapterAspect extends BaseAspect {
 
   protected transient Logger log = LoggerFactory.getLogger(this.getClass());
   

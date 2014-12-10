@@ -1,10 +1,10 @@
-package com.adaptris.profiler.client;
+package com.adaptris.profiler.aspects;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class MessageStepIncrementor implements StepIncrementor {
+class MessageStepIncrementor implements StepIncrementor {
 
   private static final int MAX_ARRAY_SIZE = 1024;
   private static transient Map<String, AtomicLong> messages = new FixedSizeMap<String, AtomicLong>();

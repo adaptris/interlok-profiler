@@ -1,4 +1,4 @@
-package com.adaptris.profiler.client;
+package com.adaptris.profiler.aspects;
 
 public interface StepIncrementor {
   
