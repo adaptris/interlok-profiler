@@ -19,7 +19,7 @@ public class ProducerAspect extends BaseAspect {
 
   private static Map<String, ProcessStep> waitingForCompletion = new HashMap<String, ProcessStep>();
 
-  @Before("call(void produce(com.adaptris.core.AdaptrisMessage, com.adaptris.core.ProduceDestination)) && within(com.adaptris.core..*)")
+  @Before("call(void produce(com.adaptris.core.AdaptrisMessage, com.adaptris.core.ProduceDestination)) && within(com.adaptris..*)")
   public synchronized void beforeService(JoinPoint jp) {
     try {
       AdaptrisMessage message = (AdaptrisMessage) jp.getArgs()[0];
@@ -34,7 +34,7 @@ public class ProducerAspect extends BaseAspect {
     }
   }
 
-  @After("call(void produce(com.adaptris.core.AdaptrisMessage, com.adaptris.core.ProduceDestination)) && within(com.adaptris.core..*)")
+  @After("call(void produce(com.adaptris.core.AdaptrisMessage, com.adaptris.core.ProduceDestination)) && within(com.adaptris..*)")
   public synchronized void afterService(JoinPoint jp) {
     String key = generateStepKey(jp);
     ProcessStep step = waitingForCompletion.get(key);

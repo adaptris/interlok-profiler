@@ -22,7 +22,7 @@ public class WorkflowAspect extends BaseAspect {
 
   private static Map<String, ProcessStep> waitingForCompletion = new HashMap<String, ProcessStep>();
 
-  @Before("call(void workflowStart(com.adaptris.core.AdaptrisMessage)) && within(com.adaptris.core..*)")
+  @Before("call(void workflowStart(com.adaptris.core.AdaptrisMessage)) && within(com.adaptris..*)")
   public synchronized void beforeService(JoinPoint jp) {
     try {
       AdaptrisMessage message = (AdaptrisMessage) jp.getArgs()[0];
@@ -40,7 +40,7 @@ public class WorkflowAspect extends BaseAspect {
     }
   }
 
-  @After("call(void workflowEnd(com.adaptris.core.AdaptrisMessage, com.adaptris.core.AdaptrisMessage)) && within(com.adaptris.core..*)")
+  @After("call(void workflowEnd(com.adaptris.core.AdaptrisMessage, com.adaptris.core.AdaptrisMessage)) && within(com.adaptris..*)")
   public synchronized void afterService(JoinPoint jp) {
     String key = generateStepKey(jp);
     ProcessStep step = waitingForCompletion.get(key);
