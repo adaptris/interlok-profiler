@@ -19,7 +19,7 @@ public class AdapterAspect extends BaseAspect {
     PluginFactory.getInstance().getPlugin().start();
   }
   
-  @Before("call(void stop()) && within(com.adaptris.core.Adapter)")
+  @Before("execution(* com.adaptris.core.Adapter.stop())")
   public synchronized void beforeAdapterStop(JoinPoint jp) throws Exception {
     log.trace("Profiler : Before Adapter Stop");
     PluginFactory.getInstance().getPlugin().stop();
