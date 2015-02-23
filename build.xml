@@ -76,14 +76,14 @@
 
   <target name="jar.resources" depends="prepare">
     <!-- build the manifest file -->
-    <adapter:create-manifest file="${build.dir}/Manifest.mf" title="Interlok Profiler"/>
+    <adapter:create-manifest file="${build.dir}/Manifest.mf" title="${manifest.title}"/>
   	<copy todir="${classes.build.dir}/META-INF">
 	    <fileset dir="${basedir}/META-INF"/>
 	  </copy>
   </target>
 
   <target name="jar" depends="compile, jar.resources" description="Build a jar file">
-    <adapter:create-jar basedir="${classes.build.dir}" jarfile="${project.dist.dir}/${project.jar.name}" manifest="${build.dir}/Manifest.mf" />
+    <adapter:create-jar basedir="${classes.build.dir}" jarfile="${project.dist.dir}/${project.jar.name}" manifest="${build.dir}/Manifest.mf" version-title="${manifest.title}"/>
   </target>
 
   <target name="javadoc" depends="prepare-ivy" description="Create javadocs">
