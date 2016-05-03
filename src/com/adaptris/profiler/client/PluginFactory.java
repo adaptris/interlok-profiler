@@ -58,6 +58,9 @@ public abstract class PluginFactory {
   private static class NoOpPlugin implements ClientPlugin {
 
     @Override
+    public void init() {}
+
+    @Override
     public void start() {
     }
 
@@ -66,8 +69,12 @@ public abstract class PluginFactory {
     }
 
     @Override
+    public void close() {}
+
+    @Override
     public List<EventReceiver> getReceivers() {
       return Collections.emptyList();
     }
+
   }
 }
