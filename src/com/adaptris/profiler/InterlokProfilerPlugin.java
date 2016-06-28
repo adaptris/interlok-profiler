@@ -1,22 +1,41 @@
 package com.adaptris.profiler;
 
+import com.adaptris.core.ComponentLifecycle;
+import com.adaptris.profiler.aspects.AdapterAspect;
+
 /**
  * Interface defining additional lifecycle steps for profiler implementations that require it.
- * 
+ * <p>
+ * These steps will be called during the corresponding {@link AdapterAspect} methods; and allow you to have additional behaviour
+ * that happens before the corresponding {@link ComponentLifecycle} methods.
+ * </p>
  * 
  */
 public interface InterlokProfilerPlugin {
 
   /**
-   * Start the profiler plugin
+   * Corresponds to {@link ComponentLifecycle#start()}.
    * 
    */
   public void start();
   
   /**
-   * Stop the plugin.
+   * Corresponds to {@link ComponentLifecycle#stop()}.
    * 
    */
   public void stop();
+
+  /**
+   * Corresponds to {@link ComponentLifecycle#init()}.
+   * 
+   */
+  public void init();
+
+  /**
+   * Corresponds to {@link ComponentLifecycle#close()}.
+   * 
+   */
+  public void close();
+
 
 }

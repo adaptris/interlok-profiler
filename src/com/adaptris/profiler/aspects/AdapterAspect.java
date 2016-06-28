@@ -12,9 +12,16 @@ import com.adaptris.profiler.client.PluginFactory;
 public class AdapterAspect extends BaseAspect {
 
   protected transient Logger log = LoggerFactory.getLogger(this.getClass());
+
+
+  @Before("execution(* com.adaptris.core.Adapter.init())")
+  public synchronized void beforeAdapterInit(JoinPoint jp) throws Exception {
+    log.trace("Profiler : Before Adapter Init");
+    PluginFactory.getInstance().getPlugin().init();
+  }
   
   @Before("execution(* com.adaptris.core.Adapter.start())")
-  public synchronized void afterAdapterStart(JoinPoint jp) throws Exception {
+  public synchronized void beforeAdapterStart(JoinPoint jp) throws Exception {
     log.trace("Profiler : Before Adapter Start");
     PluginFactory.getInstance().getPlugin().start();
   }
@@ -23,5 +30,11 @@ public class AdapterAspect extends BaseAspect {
   public synchronized void beforeAdapterStop(JoinPoint jp) throws Exception {
     log.trace("Profiler : Before Adapter Stop");
     PluginFactory.getInstance().getPlugin().stop();
+  }
+
+  @Before("execution(* com.adaptris.core.Adapter.close())")
+  public synchronized void beforeAdapterClose(JoinPoint jp) throws Exception {
+    log.trace("Profiler : Before Adapter Close");
+    PluginFactory.getInstance().getPlugin().close();
   }
 }

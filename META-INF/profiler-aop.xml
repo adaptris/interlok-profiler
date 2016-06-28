@@ -5,6 +5,5 @@
         <aspect name="com.adaptris.profiler.aspects.ProducerAspect"/>
         <aspect name="com.adaptris.profiler.aspects.AdapterAspect"/>
     </aspects>
-    <weaver options="-verbose">
-    </weaver>
+    <weaver options="-XmessageHandlerClass:com.adaptris.profiler.util.QuietLogger"/>
 </aspectj>
