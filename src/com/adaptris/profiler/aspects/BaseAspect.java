@@ -40,7 +40,7 @@ abstract class BaseAspect {
   }
 
   protected SerializableAdaptrisMessage serialize(AdaptrisMessage msg) throws Exception {
-    return translator.translate(msg);
+    return new SerializableAdaptrisMessage(translator.translate(msg));
   }
 
   protected long getNextSequenceNumber(String msgId) {
