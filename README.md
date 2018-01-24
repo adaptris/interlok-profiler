@@ -1,4 +1,4 @@
-# interlok-profiler
+# interlok-profiler [![GitHub tag](https://img.shields.io/github/tag/adaptris/interlok-profiler.svg)](https://github.com/adaptris/interlok-profiler/tags)
 
 The source code contains a client and server component.
 
