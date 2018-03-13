@@ -1,21 +1,7 @@
-/*
-    Copyright 2015 Adaptris Ltd.
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-*/
-
 package com.adaptris.profiler.aspects;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -23,10 +9,12 @@ import org.aspectj.lang.JoinPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.adaptris.core.Adapter;
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.DefaultSerializableMessageTranslator;
 import com.adaptris.core.SerializableAdaptrisMessage;
 import com.adaptris.core.SerializableMessageTranslator;
+import com.adaptris.core.WorkflowImp;
 import com.adaptris.profiler.MessageProcessStep;
 import com.adaptris.profiler.ProcessStep;
 import com.adaptris.profiler.ReflectionHelper;
@@ -36,9 +24,15 @@ import com.adaptris.profiler.client.PluginFactory;
 
 abstract class BaseAspect {
 
+  protected static Adapter myAdapter;
+  
+  protected static Map<String, WorkflowImp> serviceWorkflowMap = new HashMap<>();
+  protected static Map<String, WorkflowImp> knownWorkflows = new HashMap<>();
+  
   private static final ExecutorService threadPool = Executors.newCachedThreadPool();
   private SerializableMessageTranslator translator = new DefaultSerializableMessageTranslator();
   private StepIncrementor sequenceGenerator = new MessageStepIncrementor();
+  
   protected transient Logger log = LoggerFactory.getLogger(this.getClass());
 
   public BaseAspect() {
@@ -64,7 +58,9 @@ abstract class BaseAspect {
   }
 
   protected MessageProcessStep createStep(StepType type, Object o, SerializableAdaptrisMessage serializedMsg) {
+    // add the parent map here!
     MessageProcessStep step = new MessageProcessStep();
+    step.setInterlokComponent(new InterlokComponent().build(o, serviceWorkflowMap, myAdapter));
     step.setMessageId(serializedMsg.getUniqueId());
     step.setStepType(type);
     step.setOrder(getNextSequenceNumber(serializedMsg.getUniqueId()));
