@@ -55,7 +55,6 @@
 
     <property name="tmp.jar.name" value = "${project.name}-tmp.jar"/>
     <property name="yguard.report" value="${build.dir}/${project.name}-${jar.version}.yguard.xml.gz"/>
-
   </target>
 
   <target name="prepare" depends="init, prepare-ivy">
