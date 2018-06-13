@@ -7,7 +7,9 @@ import com.adaptris.core.AdaptrisComponent;
 import com.adaptris.core.AdaptrisMessageConsumerImp;
 import com.adaptris.core.AdaptrisMessageProducer;
 import com.adaptris.core.Channel;
+import com.adaptris.core.ConfiguredDestination;
 import com.adaptris.core.CoreException;
+import com.adaptris.core.ProduceDestination;
 import com.adaptris.core.Service;
 import com.adaptris.core.ServiceCollection;
 import com.adaptris.core.WorkflowImp;
@@ -57,7 +59,15 @@ public class InterlokComponent {
         this.setVendorImp(((AdaptrisMessageProducer)o).retrieveConnection(JmsConnection.class).getVendorImplementation().getClass().getName());
       }
       try {
-        this.setDestination(((AdaptrisMessageProducer) o).getDestination().getDestination(null));
+        ProduceDestination producerDestination = ((AdaptrisMessageProducer) o).getDestination();
+        if (producerDestination != null) {
+          if (producerDestination instanceof ConfiguredDestination) {
+            this.setDestination(((ConfiguredDestination)producerDestination).getDestination());
+          }
+          else {
+            this.setDestination(producerDestination.getDestination(null));
+          }
+        }
       } catch (CoreException e) {
         e.printStackTrace();
       }

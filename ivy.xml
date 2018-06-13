@@ -21,6 +21,7 @@
 	<publications>
 		<artifact name="adp-profiler" type="jar" ext="jar"/>
 		<artifact name="adp-profiler" type="pom" ext="pom"/>
+		<artifact name="adp-profiler-src" type="source" ext="jar" conf="sources" m:classifier="sources"/>
 		<artifact type="javadoc" ext="jar" conf="javadoc" m:classifier="javadoc"/>
 	</publications>
 	
