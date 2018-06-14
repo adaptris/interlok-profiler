@@ -1,6 +1,8 @@
 package com.adaptris.profiler.aspects;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -14,6 +16,9 @@ import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.DefaultSerializableMessageTranslator;
 import com.adaptris.core.SerializableAdaptrisMessage;
 import com.adaptris.core.SerializableMessageTranslator;
+import com.adaptris.core.Service;
+import com.adaptris.core.ServiceCollection;
+import com.adaptris.core.ServiceWrapper;
 import com.adaptris.core.WorkflowImp;
 import com.adaptris.profiler.MessageProcessStep;
 import com.adaptris.profiler.ProcessStep;
@@ -67,6 +72,7 @@ abstract class BaseAspect {
     step.setMessage(serializedMsg);
     step.setStepName(o.getClass().getSimpleName());
     step.setStepInstanceId(ReflectionHelper.getUniqueId(o));
+    log.trace("Creating Step for {} {}", type, serializedMsg.getUniqueId());
     return step;
   }
 
@@ -80,6 +86,91 @@ abstract class BaseAspect {
   protected void log(String prefix, JoinPoint jp) {
     log.trace("{} ({}({})) : {}", prefix, jp.getTarget().getClass().getSimpleName(), ReflectionHelper.getUniqueId(jp.getTarget()),
         ReflectionHelper.getUniqueId(jp.getArgs()[0]));
+  }
+  
+  /**
+   * Get a list of all services including nested ones for a workflow
+   * @param workflow
+   * @return
+   */
+  protected List<Service> getAllServices(WorkflowImp workflow) {
+    List<Service> results = new ArrayList<Service>();
+    results.addAll(getAllServices(workflow.getServiceCollection()));
+    return results;
+  }
+  
+  /**
+   * Get a list of all services including nested ones
+   * @param services - list of services
+   * @return
+   */
+  protected List<Service> getAllServices(List<Service> workflowServices) {
+    List<Service> results = new ArrayList<Service>();
+    for (Service service : workflowServices) {
+      results.addAll(getAllServices(service));
+    }
+    return results;
+  }
+  
+  /**
+   * Get a list of all services including nested ones
+   * @param wrappedServices - Array of services
+   * @return
+   */
+  protected List<Service> getAllServices(Service[] wrappedServices) {
+    List<Service> results = new ArrayList<Service>();
+    for (Service service : wrappedServices) {
+      results.addAll(getAllServices(service));
+    }
+    return results;
+  }
+  
+  /**
+   * Process a single standard service
+   * @param service
+   * @return
+   */
+  protected List<Service> getAllServices(Service service) {
+    List<Service> results = new ArrayList<Service>();
+    
+    if (service instanceof ServiceWrapper) {
+      results.addAll(getAllServices((ServiceWrapper)service));
+    }
+    else if (service instanceof ServiceCollection) {
+      results.addAll(getAllServices((ServiceCollection)service));
+    }
+    else {
+      results.add(service);
+    }
+    return results;
+  }
+  
+  /**
+   * Process a special service like SplitJoinService that has nested services
+   * @param service
+   * @return
+   */
+  protected List<Service> getAllServices(ServiceWrapper service) {
+    List<Service> results = new ArrayList<Service>();
+    results.add(service);
+    Service[] wrappedServices = ((ServiceWrapper)service).wrappedServices();
+    if (wrappedServices != null && wrappedServices.length > 0)
+      results.addAll(getAllServices(wrappedServices));
+    return results;
+  }
+  
+  /**
+   * Process a special service collection
+   * @param serviceCollection
+   * @return
+   */
+  protected List<Service> getAllServices(ServiceCollection serviceCollection) {
+    List<Service> results = new ArrayList<Service>();
+    results.add(serviceCollection);
+    List<Service> services = ((ServiceCollection)serviceCollection).getServices();
+    if (services != null && services.size() > 0)
+      results.addAll(getAllServices(services));
+    return results;
   }
 
 }

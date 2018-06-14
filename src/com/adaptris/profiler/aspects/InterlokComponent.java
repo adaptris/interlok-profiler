@@ -2,6 +2,9 @@ package com.adaptris.profiler.aspects;
 
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.adaptris.core.Adapter;
 import com.adaptris.core.AdaptrisComponent;
 import com.adaptris.core.AdaptrisMessageConsumerImp;
@@ -17,6 +20,8 @@ import com.adaptris.core.jms.JmsConnection;
 
 public class InterlokComponent {
 
+  protected transient Logger log = LoggerFactory.getLogger(this.getClass());
+  
   public enum ComponentType {
     Producer,
     
@@ -45,14 +50,19 @@ public class InterlokComponent {
   
   private String vendorImp;
   
-  public InterlokComponent() {
-    
-  }
-
+  /**
+   * 
+   * @param o
+   * @param serviceWorkflowMap
+   * @param myAdapter
+   * @return
+   */
   public InterlokComponent build(Object o, Map<String, WorkflowImp> serviceWorkflowMap, Adapter myAdapter) {
     this.setUniqueId(((AdaptrisComponent) o).getUniqueId());
     this.setClassName(((AdaptrisComponent) o).getClass().getName());
     
+    log.trace("Building interlok component: {} of type: {}",  this.getUniqueId(), this.getClassName());
+    // Handle producer
     if(o instanceof AdaptrisMessageProducer) {
       this.setComponentType(ComponentType.Producer);
       if(this.getClassName().contains("Jms")) {
@@ -75,7 +85,12 @@ public class InterlokComponent {
       if(workflowImp != null) {
         this.setParent(new InterlokComponent().build(workflowImp, null, myAdapter));
       }
-    } else if(o instanceof AdaptrisMessageConsumerImp) {
+      else {
+        log.error("Failed to get service workflow for producer: " + this.getUniqueId());
+      }
+    }
+    // Handle consumer
+    else if(o instanceof AdaptrisMessageConsumerImp) {
       this.setComponentType(ComponentType.Consumer);
       this.setDestination(((AdaptrisMessageConsumerImp) o).getDestination().getDestination());
       if(this.getClassName().contains("Jms")) {
@@ -85,29 +100,57 @@ public class InterlokComponent {
       if(workflowImp != null) {
         this.setParent(new InterlokComponent().build(workflowImp, null, myAdapter));
       }
-    } else if(o instanceof ServiceCollection) {
+      else {
+        log.error("Failed to get workflow for consumer: " + this.getUniqueId());
+      }
+    }
+    // Handler service collection
+    else if(o instanceof ServiceCollection) {
       this.setComponentType(ComponentType.ServiceList);
-      WorkflowImp workflowImp = serviceWorkflowMap.get(this.getUniqueId());
+      WorkflowImp workflowImp = getWorkflow(serviceWorkflowMap);
       if(workflowImp != null) {
         this.setParent(new InterlokComponent().build(workflowImp, null, myAdapter));
       }
-    } else if(o instanceof Service) {
+      else {
+        log.error("Failed to get workflow for servicelist: " + this.getUniqueId());
+      }
+    }
+    // Handle Service
+    else if(o instanceof Service) {
       this.setComponentType(ComponentType.Service);
-      WorkflowImp workflowImp = serviceWorkflowMap.get(this.getUniqueId());
-      if(workflowImp != null) {
+      WorkflowImp workflowImp = getWorkflow(serviceWorkflowMap);
+      if (workflowImp != null) {
         this.setParent(new InterlokComponent().build(workflowImp, null, myAdapter));
       }
-    } else if(o instanceof WorkflowImp) {
+      else {
+        log.error("Failed to get workflow for service: " + this.getUniqueId());
+      }
+    }
+    // Handle workflow
+    else if(o instanceof WorkflowImp) {
       this.setComponentType(ComponentType.Workflow);
       this.setParent(new InterlokComponent().build(((WorkflowImp) o).obtainChannel(), null, myAdapter));
-    } else if(o instanceof Channel) {
+    }
+    // Handle Channel
+    else if(o instanceof Channel) {
       this.setComponentType(ComponentType.Channel);
       this.setParent(new InterlokComponent().build(myAdapter, null, myAdapter));
-    } else if(o instanceof Adapter) {
+    }
+    // Handler adapter
+    else if(o instanceof Adapter) {
       this.setComponentType(ComponentType.Adapter);
     }
     
     return this;
+  }
+  
+  private WorkflowImp getWorkflow(Map<String, WorkflowImp> serviceWorkflowMap) {
+    WorkflowImp workflowImp = serviceWorkflowMap.get(this.getUniqueId());
+    if (workflowImp == null) {
+      log.debug("returning dummy workflow for: {}", this.getUniqueId());
+      workflowImp = serviceWorkflowMap.get(AdapterAspect.DUMMY_WORKFLOW);
+    }
+    return workflowImp; 
   }
   
   public String getUniqueId() {

@@ -7,11 +7,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.adaptris.core.Adapter;
+import com.adaptris.core.Channel;
+import com.adaptris.core.Service;
+import com.adaptris.core.StandardWorkflow;
 import com.adaptris.profiler.client.PluginFactory;
 
 @Aspect
 public class AdapterAspect extends BaseAspect {
 
+  public static final String DUMMY_CHANNEL  = "dummy-shared-component-channel";
+  public static final String DUMMY_WORKFLOW = "dummy-shared-component-workflow";
+  
   protected transient Logger log = LoggerFactory.getLogger(this.getClass());
 
 
@@ -26,6 +32,17 @@ public class AdapterAspect extends BaseAspect {
     log.trace("Profiler : Before Adapter Start");
     PluginFactory.getInstance().getPlugin().start(jp.getTarget());
     myAdapter = (Adapter) jp.getTarget();
+    
+    // Process shared services by added fake hierarchy of workflow and channel
+    StandardWorkflow dummyWorkflow = new StandardWorkflow();
+    dummyWorkflow.setUniqueId(DUMMY_WORKFLOW);
+    Channel dummyChannel = new Channel();
+    dummyChannel.setUniqueId(DUMMY_CHANNEL);
+    dummyWorkflow.registerChannel(dummyChannel);
+    for (Service service : getAllServices(myAdapter.getSharedComponents().getServices())) {
+      serviceWorkflowMap.put(service.getUniqueId(), dummyWorkflow);
+    }
+    
   }
   
   @Before("execution(* com.adaptris.core.Adapter.stop())")
