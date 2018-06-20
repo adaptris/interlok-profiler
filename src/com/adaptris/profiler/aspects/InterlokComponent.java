@@ -53,7 +53,7 @@ public class InterlokComponent {
     
     if(o instanceof AdaptrisMessageProducer) {
       this.setComponentType(ComponentType.Producer);
-      if(this.getClassName().contains("Jms")) {
+      if(isJms()) {
         this.setVendorImp(((AdaptrisMessageProducer)o).retrieveConnection(JmsConnection.class).getVendorImplementation().getClass().getName());
       }
       try {
@@ -68,7 +68,7 @@ public class InterlokComponent {
     } else if(o instanceof AdaptrisMessageConsumerImp) {
       this.setComponentType(ComponentType.Consumer);
       this.setDestination(((AdaptrisMessageConsumerImp) o).getDestination().getDestination());
-      if(this.getClassName().contains("Jms")) {
+      if(isJms()) {
         this.setVendorImp(((AdaptrisMessageConsumerImp)o).retrieveConnection(JmsConnection.class).getVendorImplementation().getClass().getName());
       }
       WorkflowImp workflowImp = (WorkflowImp) ((AdaptrisMessageConsumerImp) o).retrieveAdaptrisMessageListener();
@@ -98,6 +98,10 @@ public class InterlokComponent {
     }
     
     return this;
+  }
+
+  private boolean isJms() {
+    return this.getClassName().toLowerCase().contains("jms");
   }
   
   public String getUniqueId() {
