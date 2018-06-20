@@ -18,8 +18,11 @@ if (JavaVersion.current().isJava8Compatible()) {
 }
 
 apply plugin: 'java'
+apply plugin: 'maven-publish'
 
 sourceCompatibility = 1.8
+group   = "com.adaptris"
+version = adpCoreVersion
 
 // In this section you declare where to find the dependencies of your project
 repositories {
@@ -91,4 +94,26 @@ configurations.junitAnt.each { File f -> antClassLoader.addURL(f.toURI().toURL()
 
 ant.importBuild('build.xml') { antTargetName ->
     'ant-' + antTargetName
+}
+
+publishing {
+  publications {
+    mavenCustom(MavenPublication) {
+      from components.java
+
+      pom.withXml {
+        asNode().appendNode("name", "Interlok Profiler")
+        asNode().appendNode("description", "Interlok Profiler.")
+      }
+    }
+  }
+  repositories {
+    maven {
+      credentials {
+        username repoUsername
+        password repoPassword
+      }
+      url "$defaultNexusRepo"
+    }
+  }
 }

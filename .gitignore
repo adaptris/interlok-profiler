@@ -1,6 +1,8 @@
 # Standard project files
 .eclipse
 build.properties
+.gradle
+gradle.properties
 .classpath
 .project
 .idea
