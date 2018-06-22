@@ -8,102 +8,107 @@ import com.adaptris.core.AdaptrisMessageConsumerImp;
 import com.adaptris.core.AdaptrisMessageProducer;
 import com.adaptris.core.Channel;
 import com.adaptris.core.CoreException;
+import com.adaptris.core.DefaultSerializableMessageTranslator;
+import com.adaptris.core.SerializableAdaptrisMessage;
+import com.adaptris.core.SerializableMessageTranslator;
 import com.adaptris.core.Service;
 import com.adaptris.core.ServiceCollection;
 import com.adaptris.core.WorkflowImp;
 import com.adaptris.core.jms.JmsConnection;
 
 public class InterlokComponent {
+  
+  private transient SerializableMessageTranslator translator = new DefaultSerializableMessageTranslator();
 
   public enum ComponentType {
     Producer,
-    
+
     Service,
-    
+
     ServiceList,
-    
+
     Workflow,
-    
+
     Channel,
-    
+
     Adapter,
-    
+
     Consumer;
   }
-  
+
   private String uniqueId;
-  
+
   private InterlokComponent parent;
-  
+
   private ComponentType componentType;
-  
+
   private String destination;
-  
+
   private String className;
-  
+
   private String vendorImp;
-  
+
   public InterlokComponent() {
-    
+
   }
 
-  public InterlokComponent build(Object o, Map<String, WorkflowImp> serviceWorkflowMap, Adapter myAdapter) {
-    this.setUniqueId(((AdaptrisComponent) o).getUniqueId());
-    this.setClassName(((AdaptrisComponent) o).getClass().getName());
-    
-    if(o instanceof AdaptrisMessageProducer) {
-      this.setComponentType(ComponentType.Producer);
+  public InterlokComponent build(Object object, Map<String, WorkflowImp> serviceWorkflowMap, Adapter myAdapter, SerializableAdaptrisMessage serializedMsg) {
+    setUniqueId(((AdaptrisComponent) object).getUniqueId());
+    setClassName(((AdaptrisComponent) object).getClass().getName());
+
+    if(object instanceof AdaptrisMessageProducer) {
+      setComponentType(ComponentType.Producer);
       if(isJms()) {
-        this.setVendorImp(((AdaptrisMessageProducer)o).retrieveConnection(JmsConnection.class).getVendorImplementation().getClass().getName());
+        setVendorImp(((AdaptrisMessageProducer)object).retrieveConnection(JmsConnection.class).getVendorImplementation().getClass().getName());
       }
       try {
-        this.setDestination(((AdaptrisMessageProducer) o).getDestination().getDestination(null));
+        setDestination(((AdaptrisMessageProducer) object).getDestination().getDestination(translator.translate(serializedMsg)));
       } catch (CoreException e) {
         e.printStackTrace();
       }
-      WorkflowImp workflowImp = serviceWorkflowMap.get(this.getUniqueId());
+      WorkflowImp workflowImp = serviceWorkflowMap.get(getUniqueId());
       if(workflowImp != null) {
-        this.setParent(new InterlokComponent().build(workflowImp, null, myAdapter));
+        setParent(new InterlokComponent().build(workflowImp, null, myAdapter, serializedMsg));
       }
-    } else if(o instanceof AdaptrisMessageConsumerImp) {
-      this.setComponentType(ComponentType.Consumer);
-      this.setDestination(((AdaptrisMessageConsumerImp) o).getDestination().getDestination());
+    } else if(object instanceof AdaptrisMessageConsumerImp) {
+      setComponentType(ComponentType.Consumer);
+      setDestination(((AdaptrisMessageConsumerImp) object).getDestination().getDestination());
       if(isJms()) {
-        this.setVendorImp(((AdaptrisMessageConsumerImp)o).retrieveConnection(JmsConnection.class).getVendorImplementation().getClass().getName());
+        setVendorImp(((AdaptrisMessageConsumerImp)object).retrieveConnection(JmsConnection.class).getVendorImplementation().getClass().getName());
       }
-      WorkflowImp workflowImp = (WorkflowImp) ((AdaptrisMessageConsumerImp) o).retrieveAdaptrisMessageListener();
+      WorkflowImp workflowImp = (WorkflowImp) ((AdaptrisMessageConsumerImp) object).retrieveAdaptrisMessageListener();
       if(workflowImp != null) {
-        this.setParent(new InterlokComponent().build(workflowImp, null, myAdapter));
+        setParent(new InterlokComponent().build(workflowImp, null, myAdapter, serializedMsg));
       }
-    } else if(o instanceof ServiceCollection) {
-      this.setComponentType(ComponentType.ServiceList);
-      WorkflowImp workflowImp = serviceWorkflowMap.get(this.getUniqueId());
+    } else if(object instanceof ServiceCollection) {
+      setComponentType(ComponentType.ServiceList);
+      WorkflowImp workflowImp = serviceWorkflowMap.get(getUniqueId());
       if(workflowImp != null) {
-        this.setParent(new InterlokComponent().build(workflowImp, null, myAdapter));
+        setParent(new InterlokComponent().build(workflowImp, null, myAdapter, serializedMsg));
       }
-    } else if(o instanceof Service) {
-      this.setComponentType(ComponentType.Service);
-      WorkflowImp workflowImp = serviceWorkflowMap.get(this.getUniqueId());
+    } else if(object instanceof Service) {
+      setComponentType(ComponentType.Service);
+      WorkflowImp workflowImp = serviceWorkflowMap.get(getUniqueId());
       if(workflowImp != null) {
-        this.setParent(new InterlokComponent().build(workflowImp, null, myAdapter));
+        setParent(new InterlokComponent().build(workflowImp, null, myAdapter, serializedMsg));
       }
-    } else if(o instanceof WorkflowImp) {
-      this.setComponentType(ComponentType.Workflow);
-      this.setParent(new InterlokComponent().build(((WorkflowImp) o).obtainChannel(), null, myAdapter));
-    } else if(o instanceof Channel) {
-      this.setComponentType(ComponentType.Channel);
-      this.setParent(new InterlokComponent().build(myAdapter, null, myAdapter));
-    } else if(o instanceof Adapter) {
-      this.setComponentType(ComponentType.Adapter);
+    } else if(object instanceof WorkflowImp) {
+      setComponentType(ComponentType.Workflow);
+      setParent(new InterlokComponent().build(((WorkflowImp) object).obtainChannel(), null, myAdapter, serializedMsg));
+    } else if(object instanceof Channel) {
+      setComponentType(ComponentType.Channel);
+      setParent(new InterlokComponent().build(myAdapter, null, myAdapter, serializedMsg));
+    } else if(object instanceof Adapter) {
+      setComponentType(ComponentType.Adapter);
     }
-    
+
     return this;
   }
 
   private boolean isJms() {
-    return this.getClassName().toLowerCase().contains("jms");
+    return getClassName().toLowerCase().contains("jms");
   }
-  
+
   public String getUniqueId() {
     return uniqueId;
   }
@@ -135,15 +140,16 @@ public class InterlokComponent {
   public void setDestination(String destination) {
     this.destination = destination;
   }
-  
+
+  @Override
   public String toString() {
     StringBuffer buffer = new StringBuffer();
-    
+
     buffer.append("Interlok Component: [");
-    buffer.append("ID = " + this.getUniqueId() + ", ");
-    buffer.append("ComponentType = " + this.getComponentType() + ", ");
-    buffer.append("Destination = " + this.getDestination() + "]");
-    
+    buffer.append("ID = " + getUniqueId() + ", ");
+    buffer.append("ComponentType = " + getComponentType() + ", ");
+    buffer.append("Destination = " + getDestination() + "]");
+
     return buffer.toString();
   }
 

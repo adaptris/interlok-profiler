@@ -20,10 +20,11 @@ public class ProducerAspect extends BaseAspect {
   private static Map<String, ProcessStep> waitingForCompletion = new HashMap<String, ProcessStep>();
 
   @Before("call(void produce(com.adaptris.core.AdaptrisMessage, com.adaptris.core.ProduceDestination)) && within(com.adaptris..*)")
-  public synchronized void beforeService(JoinPoint jp) {
+  public synchronized void beforeProducer(JoinPoint jp) {
     try {
       AdaptrisMessage message = (AdaptrisMessage) jp.getArgs()[0];
       SerializableAdaptrisMessage serializedMsg = serialize(message);
+
       MessageProcessStep step = createStep(StepType.PRODUCER, jp.getTarget(), serializedMsg);
       step.setTimeStarted(System.nanoTime());
       waitingForCompletion.put(generateStepKey(jp), step);
@@ -35,9 +36,10 @@ public class ProducerAspect extends BaseAspect {
   }
 
   @After("call(void produce(com.adaptris.core.AdaptrisMessage, com.adaptris.core.ProduceDestination)) && within(com.adaptris..*)")
-  public synchronized void afterService(JoinPoint jp) {
+  public synchronized void afterProducer(JoinPoint jp) {
     String key = generateStepKey(jp);
     ProcessStep step = waitingForCompletion.get(key);
+    // Step will only be null, if we've had an error in the beforeService (serializing the message).
     if (step != null) {
       long difference = System.nanoTime() - step.getTimeStarted();
       step.setTimeTakenMs(difference);
@@ -46,4 +48,5 @@ public class ProducerAspect extends BaseAspect {
       log("After Produce", jp);
     }
   }
+
 }

@@ -25,14 +25,14 @@ import com.adaptris.profiler.client.PluginFactory;
 abstract class BaseAspect {
 
   protected static Adapter myAdapter;
-  
+
   protected static Map<String, WorkflowImp> serviceWorkflowMap = new HashMap<>();
   protected static Map<String, WorkflowImp> knownWorkflows = new HashMap<>();
-  
+
   private static final ExecutorService threadPool = Executors.newCachedThreadPool();
   private SerializableMessageTranslator translator = new DefaultSerializableMessageTranslator();
   private StepIncrementor sequenceGenerator = new MessageStepIncrementor();
-  
+
   protected transient Logger log = LoggerFactory.getLogger(this.getClass());
 
   public BaseAspect() {
@@ -41,6 +41,7 @@ abstract class BaseAspect {
   protected void sendEvent(final ProcessStep step) {
     for (final EventReceiver receiver : PluginFactory.getInstance().getPlugin().getReceivers()) {
       threadPool.execute(new Runnable() {
+        @Override
         public void run() {
           Thread.currentThread().setName("Profiler-Event@" + hashCode());
           receiver.onEvent(step);
@@ -60,7 +61,7 @@ abstract class BaseAspect {
   protected MessageProcessStep createStep(StepType type, Object o, SerializableAdaptrisMessage serializedMsg) {
     // add the parent map here!
     MessageProcessStep step = new MessageProcessStep();
-    step.setInterlokComponent(new InterlokComponent().build(o, serviceWorkflowMap, myAdapter));
+    step.setInterlokComponent(new InterlokComponent().build(o, serviceWorkflowMap, myAdapter, serializedMsg));
     step.setMessageId(serializedMsg.getUniqueId());
     step.setStepType(type);
     step.setOrder(getNextSequenceNumber(serializedMsg.getUniqueId()));

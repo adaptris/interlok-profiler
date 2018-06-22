@@ -13,6 +13,7 @@ import org.aspectj.lang.annotation.Before;
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.SerializableAdaptrisMessage;
 import com.adaptris.core.Service;
+import com.adaptris.core.ServiceCollection;
 import com.adaptris.core.Workflow;
 import com.adaptris.core.WorkflowImp;
 import com.adaptris.profiler.MessageProcessStep;
@@ -30,18 +31,16 @@ public class WorkflowAspect extends BaseAspect {
       if(jp.getTarget() instanceof Workflow) {
         WorkflowImp workflow = knownWorkflows.get(((WorkflowImp) jp.getTarget()).getUniqueId());
         if(workflow == null) {
-          for(Service service : ((WorkflowImp) jp.getTarget()).getServiceCollection().getServices()) {
-            serviceWorkflowMap.put(service.getUniqueId(), ((WorkflowImp) jp.getTarget()));
-          }
-          serviceWorkflowMap.put(((WorkflowImp) jp.getTarget()).getProducer().getUniqueId(), ((WorkflowImp) jp.getTarget()));
-          knownWorkflows.put(((WorkflowImp) jp.getTarget()).getUniqueId(), ((WorkflowImp) jp.getTarget()));
+          addToServiceWorkflowMap(jp, ((WorkflowImp) jp.getTarget()).getServiceCollection());
+          serviceWorkflowMap.put(((WorkflowImp) jp.getTarget()).getProducer().getUniqueId(), (WorkflowImp) jp.getTarget());
+          knownWorkflows.put(((WorkflowImp) jp.getTarget()).getUniqueId(), (WorkflowImp) jp.getTarget());
         }
-        
+
         AdaptrisMessage message = (AdaptrisMessage) jp.getArgs()[0];
         Date now = new Date();
         message.addMetadata("AdaptrisWorkflowEntryTimestamp", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").format(now));
         SerializableAdaptrisMessage serializedMsg = serialize(message);
-        
+
         sendEvent(createStep(StepType.CONSUMER, ((WorkflowImp) jp.getTarget()).getConsumer(), serializedMsg));
         MessageProcessStep workflowStep = createStep(StepType.WORKFLOW, jp.getTarget(), serializedMsg);
         workflowStep.setTimeStarted(now.getTime());
@@ -51,6 +50,12 @@ public class WorkflowAspect extends BaseAspect {
     }
     catch (Exception e) {
       log.error("", e);
+    }
+  }
+
+  private void addToServiceWorkflowMap(JoinPoint jp, ServiceCollection serviceCollection) {
+    for (Service service : serviceCollection.getServices()) {
+      serviceWorkflowMap.put(service.getUniqueId(), (WorkflowImp) jp.getTarget());
     }
   }
 
@@ -64,7 +69,7 @@ public class WorkflowAspect extends BaseAspect {
         long difference = System.currentTimeMillis() - step.getTimeStarted();
         step.setTimeTakenMs(difference);
         waitingForCompletion.remove(key);
-        this.sendEvent(step);
+        sendEvent(step);
         log("After Workflow", jp);
       }
     }
