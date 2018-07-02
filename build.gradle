@@ -95,25 +95,3 @@ configurations.junitAnt.each { File f -> antClassLoader.addURL(f.toURI().toURL()
 ant.importBuild('build.xml') { antTargetName ->
     'ant-' + antTargetName
 }
-
-publishing {
-  publications {
-    mavenCustom(MavenPublication) {
-      from components.java
-
-      pom.withXml {
-        asNode().appendNode("name", "Interlok Profiler")
-        asNode().appendNode("description", "Interlok Profiler.")
-      }
-    }
-  }
-  repositories {
-    maven {
-      credentials {
-        username repoUsername
-        password repoPassword
-      }
-      url "$defaultNexusRepo"
-    }
-  }
-}

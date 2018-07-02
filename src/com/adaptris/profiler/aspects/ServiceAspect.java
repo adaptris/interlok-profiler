@@ -44,7 +44,7 @@ public class ServiceAspect extends BaseAspect {
       long difference = System.nanoTime() - step.getTimeStarted();
       step.setTimeTakenMs(difference);
       waitingForCompletion.remove(key);
-      this.sendEvent(step);
+      sendEvent(step);
       log("After Service", jp);
     }
   }

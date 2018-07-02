@@ -17,7 +17,7 @@ import com.adaptris.core.WorkflowImp;
 import com.adaptris.core.jms.JmsConnection;
 
 public class InterlokComponent {
-  
+
   private transient SerializableMessageTranslator translator = new DefaultSerializableMessageTranslator();
 
   public enum ComponentType {
@@ -52,7 +52,7 @@ public class InterlokComponent {
 
   }
 
-  public InterlokComponent build(Object object, Map<String, WorkflowImp> serviceWorkflowMap, Adapter myAdapter, SerializableAdaptrisMessage serializedMsg) {
+  public InterlokComponent build(Object object, Map<String, WorkflowImp> serviceWorkflowMap, Map<String, Service> serviceServiceCollectionMap, Adapter myAdapter, SerializableAdaptrisMessage serializedMsg) {
     setUniqueId(((AdaptrisComponent) object).getUniqueId());
     setClassName(((AdaptrisComponent) object).getClass().getName());
 
@@ -63,46 +63,62 @@ public class InterlokComponent {
       }
       try {
         setDestination(((AdaptrisMessageProducer) object).getDestination().getDestination(translator.translate(serializedMsg)));
-      } catch (CoreException e) {
-        e.printStackTrace();
+      } catch (CoreException core) {
+        core.printStackTrace();
       }
       WorkflowImp workflowImp = serviceWorkflowMap.get(getUniqueId());
-      if(workflowImp != null) {
-        setParent(new InterlokComponent().build(workflowImp, null, myAdapter, serializedMsg));
+      if (workflowImp != null) {
+        setParent(new InterlokComponent().build(workflowImp, null, null, myAdapter, serializedMsg));
       }
-    } else if(object instanceof AdaptrisMessageConsumerImp) {
+    } else if (object instanceof AdaptrisMessageConsumerImp) {
       setComponentType(ComponentType.Consumer);
       setDestination(((AdaptrisMessageConsumerImp) object).getDestination().getDestination());
-      if(isJms()) {
+      if (isJms()) {
         setVendorImp(((AdaptrisMessageConsumerImp)object).retrieveConnection(JmsConnection.class).getVendorImplementation().getClass().getName());
       }
       WorkflowImp workflowImp = (WorkflowImp) ((AdaptrisMessageConsumerImp) object).retrieveAdaptrisMessageListener();
-      if(workflowImp != null) {
-        setParent(new InterlokComponent().build(workflowImp, null, myAdapter, serializedMsg));
+      if (workflowImp != null) {
+        setParent(new InterlokComponent().build(workflowImp, null, null, myAdapter, serializedMsg));
       }
-    } else if(object instanceof ServiceCollection) {
+    } else if (object instanceof ServiceCollection) {
       setComponentType(ComponentType.ServiceList);
       WorkflowImp workflowImp = serviceWorkflowMap.get(getUniqueId());
-      if(workflowImp != null) {
-        setParent(new InterlokComponent().build(workflowImp, null, myAdapter, serializedMsg));
+      if (workflowImp != null) {
+        setParent(new InterlokComponent().build(workflowImp, null, null, myAdapter, serializedMsg));
+      } else {
+        Service serviceParent = findNestedServiceParent(getUniqueId(), serviceServiceCollectionMap);
+        if (serviceParent != null) {
+          setParent(
+              new InterlokComponent().build(serviceParent, serviceWorkflowMap, serviceServiceCollectionMap, myAdapter, serializedMsg));
+        }
       }
-    } else if(object instanceof Service) {
+    } else if (object instanceof Service) {
       setComponentType(ComponentType.Service);
       WorkflowImp workflowImp = serviceWorkflowMap.get(getUniqueId());
-      if(workflowImp != null) {
-        setParent(new InterlokComponent().build(workflowImp, null, myAdapter, serializedMsg));
+      if (workflowImp != null) {
+        setParent(new InterlokComponent().build(workflowImp, null, null, myAdapter, serializedMsg));
+      } else {
+        Service serviceParent = findNestedServiceParent(getUniqueId(), serviceServiceCollectionMap);
+        if (serviceParent != null) {
+          setParent(
+              new InterlokComponent().build(serviceParent, serviceWorkflowMap, serviceServiceCollectionMap, myAdapter, serializedMsg));
+        }
       }
-    } else if(object instanceof WorkflowImp) {
+    } else if (object instanceof WorkflowImp) {
       setComponentType(ComponentType.Workflow);
-      setParent(new InterlokComponent().build(((WorkflowImp) object).obtainChannel(), null, myAdapter, serializedMsg));
-    } else if(object instanceof Channel) {
+      setParent(new InterlokComponent().build(((WorkflowImp) object).obtainChannel(), null, null, myAdapter, serializedMsg));
+    } else if (object instanceof Channel) {
       setComponentType(ComponentType.Channel);
-      setParent(new InterlokComponent().build(myAdapter, null, myAdapter, serializedMsg));
-    } else if(object instanceof Adapter) {
+      setParent(new InterlokComponent().build(myAdapter, null, null, myAdapter, serializedMsg));
+    } else if (object instanceof Adapter) {
       setComponentType(ComponentType.Adapter);
     }
 
     return this;
+  }
+
+  private Service findNestedServiceParent(String uniqueId, Map<String, Service> serviceServiceCollectionMap) {
+    return serviceServiceCollectionMap.get(uniqueId);
   }
 
   private boolean isJms() {

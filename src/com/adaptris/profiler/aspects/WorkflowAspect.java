@@ -25,12 +25,20 @@ public class WorkflowAspect extends BaseAspect {
 
   private static Map<String, ProcessStep> waitingForCompletion = new HashMap<String, ProcessStep>();
 
+  @Before("call(void initialiseWorkflow()) && within(com.adaptris..*)")
+  public synchronized void initWorkflow(JoinPoint jp) {
+    knownWorkflows.clear();
+    serviceWorkflowMap.clear();
+    serviceServiceCollectionMap.clear();
+    waitingForCompletion.clear();
+  }
+
   @Before("call(void workflowStart(com.adaptris.core.AdaptrisMessage)) && within(com.adaptris..*)")
-  public synchronized void beforeService(JoinPoint jp) {
+  public synchronized void beforeWorkflow(JoinPoint jp) {
     try {
-      if(jp.getTarget() instanceof Workflow) {
+      if (jp.getTarget() instanceof Workflow) {
         WorkflowImp workflow = knownWorkflows.get(((WorkflowImp) jp.getTarget()).getUniqueId());
-        if(workflow == null) {
+        if (workflow == null) {
           addToServiceWorkflowMap(jp, ((WorkflowImp) jp.getTarget()).getServiceCollection());
           serviceWorkflowMap.put(((WorkflowImp) jp.getTarget()).getProducer().getUniqueId(), (WorkflowImp) jp.getTarget());
           knownWorkflows.put(((WorkflowImp) jp.getTarget()).getUniqueId(), (WorkflowImp) jp.getTarget());
@@ -56,11 +64,19 @@ public class WorkflowAspect extends BaseAspect {
   private void addToServiceWorkflowMap(JoinPoint jp, ServiceCollection serviceCollection) {
     for (Service service : serviceCollection.getServices()) {
       serviceWorkflowMap.put(service.getUniqueId(), (WorkflowImp) jp.getTarget());
+      addToServiceServiceCollectionMap(service);
+    }
+  }
+
+  private void addToServiceServiceCollectionMap(Service service) {
+    for (Service nestedService : getNestedServices(service)) {
+      serviceServiceCollectionMap.put(nestedService.getUniqueId(), service);
+      addToServiceServiceCollectionMap(nestedService);
     }
   }
 
   @After("call(void workflowEnd(com.adaptris.core.AdaptrisMessage, com.adaptris.core.AdaptrisMessage)) && within(com.adaptris..*)")
-  public synchronized void afterService(JoinPoint jp) {
+  public synchronized void afterWorkflow(JoinPoint jp) {
     if(jp.getTarget() instanceof Workflow) {
       String key = generateStepKey(jp);
       ProcessStep step = waitingForCompletion.get(key);

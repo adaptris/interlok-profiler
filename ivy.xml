@@ -22,8 +22,9 @@
   <publications>
      <artifact name="adp-profiler" type="jar" ext="jar"/>
      <artifact name="adp-profiler" type="pom" ext="pom"/>
-
+     
      <artifact type="javadoc" ext="jar" conf="javadoc" m:classifier="javadoc"/>
+     <artifact type="source" ext="jar" conf="sources" m:classifier="sources"/>
   </publications>
   <dependencies>
     <dependency org="com.adaptris" name="adp-core" rev="${adp-core-version}" conf="compile->default;javadoc->javadoc" changing="true"/>
