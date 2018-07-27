@@ -9,7 +9,7 @@ Use the build script to do an `ant clean jar`.
 
 This will build a jar file that should be copied into the lib directory of your Adapter installation.
 
-Copy the `adp-profiler.properties` file into your "config" directory of your Adapter installation.
+Copy the `interlok-profiler.properties` file into your "config" directory of your Adapter installation.
 
 Copy the jar files (found in this projects lib directory) into the lib directory of your Adapter installation.
 

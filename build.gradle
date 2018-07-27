@@ -3,7 +3,7 @@
 defaultTasks 'ant-test'
 
 ext {
-  adpCoreVersion = project.hasProperty('adpCoreVersion') ? project.getProperty('adpCoreVersion') : '3.7-SNAPSHOT'
+  adpCoreVersion = project.hasProperty('adpCoreVersion') ? project.getProperty('adpCoreVersion') : '3.8-SNAPSHOT'
   repoUsername = project.hasProperty('repoUsername') ? project.getProperty('repoUsername') : 'unknown'
   repoPassword = project.hasProperty('repoPassword') ? project.getProperty('repoPassword') : 'unknown'
   defaultNexusRepo = project.hasProperty('defaultNexusRepo') ? project.getProperty('defaultNexusRepo') : 'https://repo1.maven.org/maven2/'
@@ -60,23 +60,23 @@ configurations.all {
 }
 
 dependencies {
-  compile ("com.adaptris:adp-core-apt:$adpCoreVersion") { changing= true}
+  compile ("com.adaptris:interlok-core-apt:$adpCoreVersion") { changing= true}
   compile ("com.adaptris:interlok-common:$adpCoreVersion") { changing= true}
-  compile ("com.adaptris:adp-core:$adpCoreVersion") { changing= true}
+  compile ("com.adaptris:interlok-core:$adpCoreVersion") { changing= true}
   compile ("org.aspectj:aspectjrt:1.7.4")
   compile ("org.aspectj:aspectjweaver:1.7.4")
   compile ("org.aspectj:aspectjtools:1.7.4")
   compile ("org.slf4j:slf4j-api:1.7.24")
 
   testCompile ('junit:junit:4.12')
-  testCompile ("com.adaptris:adp-stubs:$adpCoreVersion") { changing= true}
+  testCompile ("com.adaptris:interlok-stubs:$adpCoreVersion") { changing= true}
   testCompile ("org.apache.logging.log4j:log4j-core:2.9.1")
   testCompile ("org.apache.logging.log4j:log4j-1.2-api:2.9.1")
   testCompile ("org.apache.logging.log4j:log4j-slf4j-impl:2.9.1")
   testCompile ("org.apache.logging.log4j:log4j-api:2.9.1")
   testCompile ("org.mockito:mockito-all:1.9.5")
 
-  javadoc("com.adaptris:adp-core-apt:$adpCoreVersion") { changing= true}
+  javadoc("com.adaptris:interlok-core-apt:$adpCoreVersion") { changing= true}
   junitAnt 'junit:junit:4.12'
   junitAnt('org.apache.ant:ant-junit:1.9.6') {
     transitive = false
