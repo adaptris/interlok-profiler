@@ -63,7 +63,7 @@ dependencies {
   compile ("org.aspectj:aspectjrt:1.7.4")
   compile ("org.aspectj:aspectjweaver:1.7.4")
   compile ("org.aspectj:aspectjtools:1.7.4")
-  compile ("org.slf4j:slf4j-api:1.7.24")
+  compile ("org.slf4j:slf4j-api:1.7.25")
 
   testCompile ('junit:junit:4.12')
   testCompile ("com.adaptris:interlok-stubs:$adpCoreVersion") { changing= true}
