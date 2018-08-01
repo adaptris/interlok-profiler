@@ -61,7 +61,7 @@ dependencies {
   compile ("com.adaptris:interlok-common:$adpCoreVersion") { changing= true}
   compile ("com.adaptris:interlok-core:$adpCoreVersion") { changing= true}
   compile ("org.aspectj:aspectjrt:1.7.4")
-  compile ("org.aspectj:aspectjweaver:1.7.4")
+  compile ("org.aspectj:aspectjweaver:1.9.1")
   compile ("org.aspectj:aspectjtools:1.7.4")
   compile ("org.slf4j:slf4j-api:1.7.24")
 
