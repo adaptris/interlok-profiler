@@ -78,7 +78,7 @@ dependencies {
   junitAnt('org.apache.ant:ant-junit:1.9.6') {
     transitive = false
   }
-  junitAnt('org.apache.ant:ant-junit4:1.9.6') {
+  junitAnt('org.apache.ant:ant-junit4:1.10.5') {
     transitive = false
   }
 
