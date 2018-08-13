@@ -21,7 +21,7 @@ import java.util.Properties;
 
 public class ProfilerSettings {
   
-  private static final String PROPERTIES_RESOURCE = "adp-profiler.properties";
+  private static final String PROPERTIES_RESOURCE = "interlok-profiler.properties";
   private static final Properties PROPERTIES;
   
   static {
