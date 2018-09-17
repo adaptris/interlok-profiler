@@ -18,8 +18,6 @@ package com.adaptris.profiler;
 
 import java.io.Serializable;
 
-import com.adaptris.core.SerializableAdaptrisMessage;
-
 public class MessageProcessStep implements ProcessStep, Serializable {
 
   private static final long serialVersionUID = 201310141247L;
@@ -30,7 +28,6 @@ public class MessageProcessStep implements ProcessStep, Serializable {
   private StepType stepType;
   private long order;
   private long timeTaken;
-  private SerializableAdaptrisMessage message;
   private long timeStarted;
     
   public void setTimeTakenMs(long time) {
@@ -82,14 +79,6 @@ public class MessageProcessStep implements ProcessStep, Serializable {
 
   public void setOrder(long order) {
     this.order = order;
-  }
-  
-  public SerializableAdaptrisMessage getMessage() {
-    return message;
-  }
-
-  public void setMessage(SerializableAdaptrisMessage message) {
-    this.message = message;
   }
 
   public boolean equals(Object object) {

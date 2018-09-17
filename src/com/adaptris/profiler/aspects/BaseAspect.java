@@ -23,10 +23,6 @@ import org.aspectj.lang.JoinPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.adaptris.core.AdaptrisMessage;
-import com.adaptris.core.DefaultSerializableMessageTranslator;
-import com.adaptris.core.SerializableAdaptrisMessage;
-import com.adaptris.core.SerializableMessageTranslator;
 import com.adaptris.profiler.MessageProcessStep;
 import com.adaptris.profiler.ProcessStep;
 import com.adaptris.profiler.ReflectionHelper;
@@ -37,7 +33,6 @@ import com.adaptris.profiler.client.PluginFactory;
 abstract class BaseAspect {
 
   private static final ExecutorService threadPool = Executors.newCachedThreadPool();
-  private SerializableMessageTranslator translator = new DefaultSerializableMessageTranslator();
   private StepIncrementor sequenceGenerator = new MessageStepIncrementor();
   protected transient Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -55,20 +50,15 @@ abstract class BaseAspect {
     }
   }
 
-  protected SerializableAdaptrisMessage serialize(AdaptrisMessage msg) throws Exception {
-    return new SerializableAdaptrisMessage(translator.translate(msg));
-  }
-
   protected long getNextSequenceNumber(String msgId) {
     return sequenceGenerator.generate(msgId);
   }
 
-  protected MessageProcessStep createStep(StepType type, Object o, SerializableAdaptrisMessage serializedMsg) {
+  protected MessageProcessStep createStep(StepType type, Object o, String messageId) {
     MessageProcessStep step = new MessageProcessStep();
-    step.setMessageId(serializedMsg.getUniqueId());
+    step.setMessageId(messageId);
     step.setStepType(type);
-    step.setOrder(getNextSequenceNumber(serializedMsg.getUniqueId()));
-    step.setMessage(serializedMsg);
+    step.setOrder(getNextSequenceNumber(messageId));
     step.setStepName(o.getClass().getSimpleName());
     step.setStepInstanceId(ReflectionHelper.getUniqueId(o));
     return step;

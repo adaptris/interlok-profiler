@@ -16,8 +16,6 @@
 
 package com.adaptris.profiler;
 
-import com.adaptris.core.SerializableAdaptrisMessage;
-
 public interface ProcessStep {
 
   /**
@@ -71,13 +69,5 @@ public interface ProcessStep {
    * @return when the process step was started; represented by {@link System#currentTimeMillis()}
    */
   public long getTimeStarted();
-
-  /**
-   * Get a copy of the message associated with the step.
-   * 
-   * @return the message; note that when processing arbitrarily large messages via {@link com.adaptris.core.lms.FileBackedMessage};
-   *         then this may contain no data.
-   */
-  public SerializableAdaptrisMessage getMessage();
   
 }
