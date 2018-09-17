@@ -74,18 +74,18 @@ public abstract class PluginFactory {
   private static class NoOpPlugin implements ClientPlugin {
 
     @Override
-    public void init() {}
+    public void init(Object object) {}
 
     @Override
-    public void start() {
+    public void start(Object object) {
     }
 
     @Override
-    public void stop() {
+    public void stop(Object object) {
     }
 
     @Override
-    public void close() {}
+    public void close(Object object) {}
 
     @Override
     public List<EventReceiver> getReceivers() {

@@ -50,7 +50,7 @@ class MessageStepIncrementor implements StepIncrementor {
     }
 
     @Override
-    protected boolean removeEldestEntry(Map.Entry eldest) {
+    protected boolean removeEldestEntry(@SuppressWarnings("rawtypes") Map.Entry eldest) {
       return size() > MAX_ARRAY_SIZE;
     }
   }

@@ -33,25 +33,25 @@ public interface InterlokProfilerPlugin {
    * Corresponds to {@link ComponentLifecycle#start()}.
    * 
    */
-  public void start();
+  public void start(Object object);
   
   /**
    * Corresponds to {@link ComponentLifecycle#stop()}.
    * 
    */
-  public void stop();
+  public void stop(Object object);
 
   /**
    * Corresponds to {@link ComponentLifecycle#init()}.
    * 
    */
-  public void init();
+  public void init(Object object);
 
   /**
    * Corresponds to {@link ComponentLifecycle#close()}.
    * 
    */
-  public void close();
+  public void close(Object object);
 
 
 }
