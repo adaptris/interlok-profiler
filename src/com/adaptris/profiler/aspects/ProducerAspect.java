@@ -25,7 +25,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 
 import com.adaptris.core.AdaptrisMessage;
-import com.adaptris.core.SerializableAdaptrisMessage;
 import com.adaptris.profiler.MessageProcessStep;
 import com.adaptris.profiler.ProcessStep;
 import com.adaptris.profiler.StepType;
@@ -39,9 +38,8 @@ public class ProducerAspect extends BaseAspect {
   public synchronized void beforeService(JoinPoint jp) {
     try {
       AdaptrisMessage message = (AdaptrisMessage) jp.getArgs()[0];
-      SerializableAdaptrisMessage serializedMsg = serialize(message);
-      MessageProcessStep step = createStep(StepType.PRODUCER, jp.getTarget(), serializedMsg);
-      step.setTimeStarted(System.currentTimeMillis());
+      MessageProcessStep step = createStep(StepType.PRODUCER, jp.getTarget(), message.getUniqueId());
+      step.setTimeStarted(System.nanoTime());
       waitingForCompletion.put(generateStepKey(jp), step);
       log("Before Produce", jp);
     }
@@ -55,7 +53,7 @@ public class ProducerAspect extends BaseAspect {
     String key = generateStepKey(jp);
     ProcessStep step = waitingForCompletion.get(key);
     if (step != null) {
-      long difference = System.currentTimeMillis() - step.getTimeStarted();
+      long difference = System.nanoTime() - step.getTimeStarted();
       step.setTimeTakenMs(difference);
       waitingForCompletion.remove(key);
       sendEvent(step);

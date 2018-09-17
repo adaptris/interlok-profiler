@@ -25,7 +25,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 
 import com.adaptris.core.AdaptrisMessage;
-import com.adaptris.core.SerializableAdaptrisMessage;
 import com.adaptris.profiler.MessageProcessStep;
 import com.adaptris.profiler.ProcessStep;
 import com.adaptris.profiler.StepType;
@@ -39,10 +38,9 @@ public class ServiceAspect extends BaseAspect {
   public synchronized void beforeService(JoinPoint jp) {
     try {
       AdaptrisMessage message = (AdaptrisMessage) jp.getArgs()[0];
-      SerializableAdaptrisMessage serializedMsg = serialize(message);
 
-      MessageProcessStep step = createStep(StepType.SERVICE, jp.getTarget(), serializedMsg);
-      step.setTimeStarted(System.currentTimeMillis());
+      MessageProcessStep step = createStep(StepType.SERVICE, jp.getTarget(), message.getUniqueId());
+      step.setTimeStarted(System.nanoTime());
       waitingForCompletion.put(generateStepKey(jp), step);
       log("Before Service", jp);
     }
@@ -57,7 +55,7 @@ public class ServiceAspect extends BaseAspect {
     ProcessStep step = waitingForCompletion.get(key);
     // Step will only be null, if we've had an error in the beforeService (serializing the message).
     if (step != null) {
-      long difference = System.currentTimeMillis() - step.getTimeStarted();
+      long difference = System.nanoTime() - step.getTimeStarted();
       step.setTimeTakenMs(difference);
       waitingForCompletion.remove(key);
       this.sendEvent(step);

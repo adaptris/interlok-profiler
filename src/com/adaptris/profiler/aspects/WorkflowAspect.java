@@ -27,7 +27,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 
 import com.adaptris.core.AdaptrisMessage;
-import com.adaptris.core.SerializableAdaptrisMessage;
 import com.adaptris.core.Workflow;
 import com.adaptris.core.WorkflowImp;
 import com.adaptris.profiler.MessageProcessStep;
@@ -46,11 +45,10 @@ public class WorkflowAspect extends BaseAspect {
         AdaptrisMessage message = (AdaptrisMessage) jp.getArgs()[0];
         Date now = new Date();
         message.addMetadata("AdaptrisWorkflowEntryTimestamp", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").format(now));
-        SerializableAdaptrisMessage serializedMsg = serialize(message);
         
-        sendEvent(createStep(StepType.CONSUMER, ((WorkflowImp) jp.getTarget()).getConsumer(), serializedMsg));
-        MessageProcessStep workflowStep = createStep(StepType.WORKFLOW, jp.getTarget(), serializedMsg);
-        workflowStep.setTimeStarted(now.getTime());
+        sendEvent(createStep(StepType.CONSUMER, ((WorkflowImp) jp.getTarget()).getConsumer(), message.getUniqueId()));
+        MessageProcessStep workflowStep = createStep(StepType.WORKFLOW, jp.getTarget(), message.getUniqueId());
+        workflowStep.setTimeStarted(System.nanoTime());
         waitingForCompletion.put(generateStepKey(jp), workflowStep);
         log("Before Workflow", jp);
       }
@@ -67,7 +65,7 @@ public class WorkflowAspect extends BaseAspect {
       ProcessStep step = waitingForCompletion.get(key);
       // Step will only be null, if we've had an error in the beforeService (serializing the message).
       if (step != null) {
-        long difference = System.currentTimeMillis() - step.getTimeStarted();
+        long difference = System.nanoTime() - step.getTimeStarted();
         step.setTimeTakenMs(difference);
         waitingForCompletion.remove(key);
         this.sendEvent(step);
