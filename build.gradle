@@ -1,12 +1,15 @@
 ext {
-  adpCoreVersion = project.hasProperty('adpCoreVersion') ? project.getProperty('adpCoreVersion') : '3.8-SNAPSHOT'
+  interlokCoreVersion = project.hasProperty('interlokCoreVersion') ? project.getProperty('interlokCoreVersion') : '3.8-SNAPSHOT'
   releaseVersion = project.hasProperty('releaseVersion') ? project.getProperty('releaseVersion') : '3.8-SNAPSHOT'
-  mavenPublishUrl = project.hasProperty('mavenPublishUrl') ? project.getProperty('mavenPublishUrl') : 'https://development.adaptris.net/nexus/content/repositories/snapshots'
+  nexusBaseUrl = project.hasProperty('nexusBaseUrl') ? project.getProperty('nexusBaseUrl') : 'https://development.adaptris.net/nexus'
+  javadocsBaseUrl = nexusBaseUrl + "/content/sites/javadocs/com/adaptris"
+  mavenPublishUrl = project.hasProperty('mavenPublishUrl') ? project.getProperty('mavenPublishUrl') : nexusBaseUrl + '/content/repositories/snapshots'
   repoUsername = project.hasProperty('repoUsername') ? project.getProperty('repoUsername') : 'unknown'
   repoPassword = project.hasProperty('repoPassword') ? project.getProperty('repoPassword') : 'unknown'
   defaultNexusRepo = project.hasProperty('defaultNexusRepo') ? project.getProperty('defaultNexusRepo') : 'https://repo1.maven.org/maven2/'
-  interlokJavadocs= project.hasProperty('interlokJavadocs') ? project.getProperty('interlokJavadocs') : 'https://development.adaptris.net/javadocs/latest/Interlok-API/'
-  interlokCommonJavadocs= project.hasProperty('interlokJavadocs') ? project.getProperty('interlokJavadocs') : 'https://development.adaptris.net/javadocs/latest/Interlok-Common/'
+  interlokJavadocs= project.hasProperty('interlokJavadocs') ? project.getProperty('interlokJavadocs') : javadocsBaseUrl + "/interlok-core/" + interlokCoreVersion
+  interlokCommonJavadocs= project.hasProperty('interlokJavadocs') ? project.getProperty('interlokJavadocs') : javadocsBaseUrl + "/interlok-common/" + interlokCoreVersion
+  interlokLicenseJavadocs= project.hasProperty('interlokLicenseJavadocs') ? project.getProperty('interlokLicenseJavadocs') : javadocsBaseUrl + "/interlok-licensing/" + interlokCoreVersion
   componentName='Interlok Profiler'
   organizationName = "Adaptris Ltd"
   organizationUrl = "http://interlok.adaptris.net"
@@ -33,17 +36,18 @@ def versionDir = "$buildDir/version"
 
 // In this section you declare where to find the dependencies of your project
 repositories {
+  jcenter()
   maven { url "$defaultNexusRepo" }
-  maven { url "https://development.adaptris.net/nexus/content/groups/public" }
-  maven { url "https://development.adaptris.net/nexus/content/repositories/snapshots" }
-  maven { url "https://development.adaptris.net/nexus/content/repositories/releases" }
   maven {
       credentials {
         username repoUsername
         password repoPassword
       }
-      url "https://development.adaptris.net/nexus/content/groups/private"
+      url "$nexusBaseUrl/content/groups/private"
     }
+  maven { url "$nexusBaseUrl/content/groups/public" }
+  maven { url "$nexusBaseUrl/content/repositories/snapshots" }
+  maven { url "$nexusBaseUrl/content/content/repositories/releases" }
 }
 
 
@@ -65,21 +69,21 @@ configurations.all {
 }
 
 dependencies {
-  compile ("com.adaptris:interlok-core:$adpCoreVersion") { changing= true}
-  compile ("com.adaptris:interlok-common:$adpCoreVersion") { changing= true}
-  
+  compile ("com.adaptris:interlok-core:$interlokCoreVersion") { changing= true}
+  compile ("com.adaptris:interlok-common:$interlokCoreVersion") { changing= true}
+
   compile ("org.slf4j:slf4j-api:$slf4jVersion")
-  
+
   compile ("org.aspectj:aspectjrt:1.9.1")
   compile ("org.aspectj:aspectjweaver:1.9.1")
   compile ("org.aspectj:aspectjtools:1.9.1")
-  
-  annotationProcessor ("com.adaptris:interlok-common:$adpCoreVersion") {changing= true}
+
+  annotationProcessor ("com.adaptris:interlok-core-apt:$interlokCoreVersion") {changing= true}
 
   testCompile ('junit:junit:4.12')
-  testCompile ("com.adaptris:interlok-stubs:$adpCoreVersion") { changing= true}
+  testCompile ("com.adaptris:interlok-stubs:$interlokCoreVersion") { changing= true}
 
-  javadoc("com.adaptris:interlok-core-apt:$adpCoreVersion") { changing= true}
+  javadoc("com.adaptris:interlok-core-apt:$interlokCoreVersion") { changing= true}
 }
 
 
@@ -107,7 +111,9 @@ task generateVersion {
     versionFile.getParentFile().mkdirs()
     ant.propertyfile(file: versionFile) {
       entry(key: 'component.name', value: componentName)
-      entry(key: 'build.version', value: releaseVersion)
+      entry(key: 'groupId', value: project.group)
+      entry(key: 'artifactId', value: project.name)
+      entry(key: 'build.version', value: project.version)
       entry(key: 'build.date', value: new Date().format('yyyy-MM-dd'))
     }
   }
@@ -164,7 +170,9 @@ publishing {
       pom.withXml {
         asNode().appendNode("description", "Instrument Interlok to provide profiling data during runtime.")
         def properties = asNode().appendNode("properties")
-        properties.appendNode("target", "3.6.6+")
+        properties.appendNode("target", "3.8.0+")
+        properties.appendNode("tags", "profiling")
+        properties.appendNode("license", "false")
       }
     }
   }
