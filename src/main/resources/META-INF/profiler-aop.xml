@@ -1,0 +1,9 @@
+<aspectj>
+    <aspects>
+        <aspect name="com.adaptris.profiler.aspects.ServiceAspect"/>
+        <aspect name="com.adaptris.profiler.aspects.WorkflowAspect"/>
+        <aspect name="com.adaptris.profiler.aspects.ProducerAspect"/>
+        <aspect name="com.adaptris.profiler.aspects.AdapterAspect"/>
+    </aspects>
+    <weaver options="-XmessageHandlerClass:com.adaptris.profiler.util.QuietLogger"/>
+</aspectj>
