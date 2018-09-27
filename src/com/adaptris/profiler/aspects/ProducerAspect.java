@@ -39,7 +39,8 @@ public class ProducerAspect extends BaseAspect {
     try {
       AdaptrisMessage message = (AdaptrisMessage) jp.getArgs()[0];
       MessageProcessStep step = createStep(StepType.PRODUCER, jp.getTarget(), message.getUniqueId());
-      step.setTimeStarted(System.nanoTime());
+      super.recordEventStartTime(step);
+      
       waitingForCompletion.put(generateStepKey(jp), step);
       log("Before Produce", jp);
     }
@@ -53,8 +54,8 @@ public class ProducerAspect extends BaseAspect {
     String key = generateStepKey(jp);
     ProcessStep step = waitingForCompletion.get(key);
     if (step != null) {
-      long difference = System.nanoTime() - step.getTimeStarted();
-      step.setTimeTakenMs(difference);
+      super.recordEventTimeTaken(step);
+      
       waitingForCompletion.remove(key);
       sendEvent(step);
       log("After Produce", jp);

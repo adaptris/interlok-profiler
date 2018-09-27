@@ -75,5 +75,17 @@ abstract class BaseAspect {
     log.trace("{} ({}({})) : {}", prefix, jp.getTarget().getClass().getSimpleName(), ReflectionHelper.getUniqueId(jp.getTarget()),
         ReflectionHelper.getUniqueId(jp.getArgs()[0]));
   }
+  
+  protected void recordEventStartTime(ProcessStep processStep) {
+    processStep.setTimeStarted(System.currentTimeMillis());
+    processStep.setTimeStartedNanos(System.nanoTime());
+  }
+  
+  protected void recordEventTimeTaken(ProcessStep processStep) {
+    long differenceMs = System.currentTimeMillis() - processStep.getTimeStarted();
+    processStep.setTimeTakenMs(differenceMs);
+    long differenceNanos = System.nanoTime() - processStep.getTimeStartedNanos();
+    processStep.setTimeTakenNanos(differenceNanos);
+  }
 
 }

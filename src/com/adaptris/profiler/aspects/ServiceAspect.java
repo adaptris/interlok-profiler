@@ -40,7 +40,8 @@ public class ServiceAspect extends BaseAspect {
       AdaptrisMessage message = (AdaptrisMessage) jp.getArgs()[0];
 
       MessageProcessStep step = createStep(StepType.SERVICE, jp.getTarget(), message.getUniqueId());
-      step.setTimeStarted(System.nanoTime());
+      super.recordEventStartTime(step);
+      
       waitingForCompletion.put(generateStepKey(jp), step);
       log("Before Service", jp);
     }
@@ -53,10 +54,10 @@ public class ServiceAspect extends BaseAspect {
   public synchronized void afterService(JoinPoint jp) {
     String key = generateStepKey(jp);
     ProcessStep step = waitingForCompletion.get(key);
-    // Step will only be null, if we've had an error in the beforeService (serializing the message).
+    // Step will only be null, if we've had an error in the beforeService
     if (step != null) {
-      long difference = System.nanoTime() - step.getTimeStarted();
-      step.setTimeTakenMs(difference);
+      super.recordEventTimeTaken(step);
+      
       waitingForCompletion.remove(key);
       this.sendEvent(step);
       log("After Service", jp);

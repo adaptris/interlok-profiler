@@ -48,7 +48,8 @@ public class WorkflowAspect extends BaseAspect {
         
         sendEvent(createStep(StepType.CONSUMER, ((WorkflowImp) jp.getTarget()).getConsumer(), message.getUniqueId()));
         MessageProcessStep workflowStep = createStep(StepType.WORKFLOW, jp.getTarget(), message.getUniqueId());
-        workflowStep.setTimeStarted(System.nanoTime());
+        super.recordEventStartTime(workflowStep);
+        
         waitingForCompletion.put(generateStepKey(jp), workflowStep);
         log("Before Workflow", jp);
       }
@@ -63,10 +64,10 @@ public class WorkflowAspect extends BaseAspect {
     if(jp.getTarget() instanceof Workflow) {
       String key = generateStepKey(jp);
       ProcessStep step = waitingForCompletion.get(key);
-      // Step will only be null, if we've had an error in the beforeService (serializing the message).
+      // Step will only be null, if we've had an error in the beforeService
       if (step != null) {
-        long difference = System.nanoTime() - step.getTimeStarted();
-        step.setTimeTakenMs(difference);
+        super.recordEventTimeTaken(step);
+
         waitingForCompletion.remove(key);
         this.sendEvent(step);
         log("After Workflow", jp);

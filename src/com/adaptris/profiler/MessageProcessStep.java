@@ -27,15 +27,17 @@ public class MessageProcessStep implements ProcessStep, Serializable {
   private String stepInstanceId;
   private StepType stepType;
   private long order;
-  private long timeTaken;
-  private long timeStarted;
+  private long timeTakenMs;
+  private long timeStartedMs;
+  private long timeTakenNanos;
+  private long timeStartedNanos;
     
   public void setTimeTakenMs(long time) {
-    this.timeTaken = time;
+    this.timeTakenMs = time;
   }
   
   public long getTimeTakenMs() {
-    return timeTaken;
+    return timeTakenMs;
   }
   
   @Override
@@ -101,10 +103,29 @@ public class MessageProcessStep implements ProcessStep, Serializable {
 
   @Override
   public long getTimeStarted() {
-    return timeStarted;
+    return timeStartedMs;
   }
   
   public void setTimeStarted(long timeStarted) {
-    this.timeStarted = timeStarted;
+    this.timeStartedMs = timeStarted;
+  }
+
+  @Override
+  public long getTimeTakenNanos() {
+    return this.timeTakenNanos;
+  }
+
+  @Override
+  public void setTimeTakenNanos(long time) {
+    this.timeTakenNanos = time;
+  }
+
+  @Override
+  public long getTimeStartedNanos() {
+    return this.timeStartedNanos;
+  }
+  
+  public void setTimeStartedNanos(long timeStarted) {
+    this.timeStartedNanos = timeStarted;
   }
 }

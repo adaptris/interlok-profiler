@@ -64,10 +64,30 @@ public interface ProcessStep {
   public void setTimeTakenMs(long time);
   
   /**
+   * Get the time taken to process the step in nanoseconds.
+   * 
+   * @return the time taken; the difference between {@link System#nanoTime()} and {@link #getTimeStartedNanos()}
+   */
+  public long getTimeTakenNanos();
+  
+  public void setTimeTakenNanos(long time);
+  
+  /**
    * Get when the process step was started.
    * 
    * @return when the process step was started; represented by {@link System#currentTimeMillis()}
    */
   public long getTimeStarted();
+  
+  public void setTimeStarted(long time);
+  
+  /**
+   * Get when the process step was started.
+   * 
+   * @return when the process step was started; represented by {@link System#nanoTime()}
+   */
+  public long getTimeStartedNanos();
+  
+  public void setTimeStartedNanos(long time);
   
 }
