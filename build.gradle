@@ -74,7 +74,7 @@ dependencies {
 
   compile ("org.slf4j:slf4j-api:$slf4jVersion")
 
-  compile ("org.aspectj:aspectjrt:1.9.1")
+  compile ("org.aspectj:aspectjrt:1.9.2")
   compile ("org.aspectj:aspectjweaver:1.9.1")
   compile ("org.aspectj:aspectjtools:1.9.1")
 
