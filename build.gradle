@@ -76,7 +76,7 @@ dependencies {
 
   compile ("org.aspectj:aspectjrt:1.9.1")
   compile ("org.aspectj:aspectjweaver:1.9.1")
-  compile ("org.aspectj:aspectjtools:1.9.1")
+  compile ("org.aspectj:aspectjtools:1.9.2")
 
   annotationProcessor ("com.adaptris:interlok-core-apt:$interlokCoreVersion") {changing= true}
 
