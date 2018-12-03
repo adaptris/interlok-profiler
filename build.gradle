@@ -1,9 +1,9 @@
 ext {
   interlokCoreVersion = project.hasProperty('interlokCoreVersion') ? project.getProperty('interlokCoreVersion') : '3.8-SNAPSHOT'
   releaseVersion = project.hasProperty('releaseVersion') ? project.getProperty('releaseVersion') : '3.8-SNAPSHOT'
-  nexusBaseUrl = project.hasProperty('nexusBaseUrl') ? project.getProperty('nexusBaseUrl') : 'https://development.adaptris.net/nexus'
-  javadocsBaseUrl = nexusBaseUrl + "/content/sites/javadocs/com/adaptris"
+  nexusBaseUrl = project.hasProperty('nexusBaseUrl') ? project.getProperty('nexusBaseUrl') : 'https://nexus.adaptris.net/nexus'
   mavenPublishUrl = project.hasProperty('mavenPublishUrl') ? project.getProperty('mavenPublishUrl') : nexusBaseUrl + '/content/repositories/snapshots'
+  javadocsBaseUrl = nexusBaseUrl + "/content/sites/javadocs/com/adaptris"
   repoUsername = project.hasProperty('repoUsername') ? project.getProperty('repoUsername') : 'unknown'
   repoPassword = project.hasProperty('repoPassword') ? project.getProperty('repoPassword') : 'unknown'
   defaultNexusRepo = project.hasProperty('defaultNexusRepo') ? project.getProperty('defaultNexusRepo') : 'https://repo1.maven.org/maven2/'
@@ -14,6 +14,7 @@ ext {
   organizationName = "Adaptris Ltd"
   organizationUrl = "http://interlok.adaptris.net"
   slf4jVersion = '1.7.25'
+  aspectjVersion = '1.9.2'
 }
 
 if (JavaVersion.current().isJava8Compatible()) {
@@ -36,7 +37,7 @@ def versionDir = "$buildDir/version"
 
 // In this section you declare where to find the dependencies of your project
 repositories {
-  jcenter()
+  mavenCentral()
   maven { url "$defaultNexusRepo" }
   maven {
       credentials {
@@ -47,9 +48,8 @@ repositories {
     }
   maven { url "$nexusBaseUrl/content/groups/public" }
   maven { url "$nexusBaseUrl/content/repositories/snapshots" }
-  maven { url "$nexusBaseUrl/content/content/repositories/releases" }
+  maven { url "$nexusBaseUrl/content/repositories/releases" }
 }
-
 
 configurations {
   javadoc {}
@@ -74,9 +74,9 @@ dependencies {
 
   compile ("org.slf4j:slf4j-api:$slf4jVersion")
 
-  compile ("org.aspectj:aspectjrt:1.9.1")
-  compile ("org.aspectj:aspectjweaver:1.9.1")
-  compile ("org.aspectj:aspectjtools:1.9.1")
+  compile ("org.aspectj:aspectjrt:$aspectjVersion")
+  compile ("org.aspectj:aspectjweaver:$aspectjVersion")
+  compile ("org.aspectj:aspectjtools:$aspectjVersion")
 
   annotationProcessor ("com.adaptris:interlok-core-apt:$interlokCoreVersion") {changing= true}
 
