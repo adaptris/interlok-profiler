@@ -19,15 +19,11 @@ package com.adaptris.profiler.aspects;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.adaptris.profiler.client.PluginFactory;
 
 @Aspect
 public class AdapterAspect extends BaseAspect {
-
-  protected transient Logger log = LoggerFactory.getLogger(this.getClass());
 
 
   @Before("execution(* com.adaptris.core.Adapter.init())")
