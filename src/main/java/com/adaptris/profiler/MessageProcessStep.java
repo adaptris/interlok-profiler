@@ -32,10 +32,12 @@ public class MessageProcessStep implements ProcessStep, Serializable {
   private long timeTakenNanos;
   private long timeStartedNanos;
     
+  @Override
   public void setTimeTakenMs(long time) {
     this.timeTakenMs = time;
   }
   
+  @Override
   public long getTimeTakenMs() {
     return timeTakenMs;
   }
@@ -67,6 +69,7 @@ public class MessageProcessStep implements ProcessStep, Serializable {
     this.stepInstanceId = stepInstanceId;
   }
 
+  @Override
   public StepType getStepType() {
     return stepType;
   }
@@ -75,6 +78,7 @@ public class MessageProcessStep implements ProcessStep, Serializable {
     this.stepType = stepType;
   }
 
+  @Override
   public long getOrder() {
     return order;
   }
@@ -83,7 +87,9 @@ public class MessageProcessStep implements ProcessStep, Serializable {
     this.order = order;
   }
 
+  @Override
   public boolean equals(Object object) {
+    if (object == this) return true;
     if(object instanceof MessageProcessStep) {
       MessageProcessStep other  = (MessageProcessStep) object;
       return (this.getStepInstanceId().equals(other.getStepInstanceId()));
@@ -91,6 +97,12 @@ public class MessageProcessStep implements ProcessStep, Serializable {
       return false;
   }
   
+  @Override
+  public int hashCode() {
+    return getStepInstanceId().hashCode();
+  }
+  
+  @Override
   public String toString() {
     StringBuffer buffer = new StringBuffer();
     buffer.append("MessageId - " + this.getMessageId() + "\n");
@@ -106,6 +118,7 @@ public class MessageProcessStep implements ProcessStep, Serializable {
     return timeStartedMs;
   }
   
+  @Override
   public void setTimeStarted(long timeStarted) {
     this.timeStartedMs = timeStarted;
   }
@@ -125,6 +138,7 @@ public class MessageProcessStep implements ProcessStep, Serializable {
     return this.timeStartedNanos;
   }
   
+  @Override
   public void setTimeStartedNanos(long timeStarted) {
     this.timeStartedNanos = timeStarted;
   }
