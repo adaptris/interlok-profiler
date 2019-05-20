@@ -25,7 +25,7 @@ ext {
   organizationName = "Adaptris Ltd"
   organizationUrl = "http://interlok.adaptris.net"
   slf4jVersion = '1.7.26'
-  aspectjVersion = '1.9.3'
+  aspectjVersion = '1.9.4'
 }
 
 if (JavaVersion.current().isJava8Compatible()) {
