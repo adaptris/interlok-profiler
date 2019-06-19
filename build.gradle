@@ -195,6 +195,7 @@ publishing {
 
       pom.withXml {
         asNode().appendNode("description", "Instrument Interlok to provide profiling data during runtime.")
+        asNode().appendNode("name", componentName)
         def properties = asNode().appendNode("properties")
         properties.appendNode("target", "3.8.0+")
         properties.appendNode("tags", "profiling")
