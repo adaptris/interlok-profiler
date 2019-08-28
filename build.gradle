@@ -24,7 +24,7 @@ ext {
   componentName='Interlok Profiler'
   organizationName = "Adaptris Ltd"
   organizationUrl = "http://interlok.adaptris.net"
-  slf4jVersion = '1.7.27'
+  slf4jVersion = '1.7.28'
   aspectjVersion = '1.9.4'
 }
 
