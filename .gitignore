@@ -12,6 +12,8 @@ build.properties
 *.iml
 *.iws
 *.class
+.vscode
+.gradle
 
 # Project artefacts from building.
 cobertura.ser
@@ -26,3 +28,15 @@ log4j.properties
 *.orig
 target
 bin
+gradle.properties
+security-test.properties
+security-test.properties.resolved
+unit-tests.properties
+unit-tests.properties.resolved
+security.properties
+out/
+null/
+Gemfile.lock
+.sass-cache
+_site
+/.gradle/
