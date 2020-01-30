@@ -20,3 +20,9 @@ Copy the jar files (found in this projects lib directory) into the lib directory
 You will need to start an Interlok instance up with a java agent.  A script has been provided to demonstrate (paths will need to be modified in the script).
 Copy the script named "StartWithProfiler.bat" into the root of your Interlok installation and start the instance with this script.
 This script will force the instrumentation of Interlok before launching it.
+
+## Dependant jar files
+
+- [aspectjwearver.jar - 1.9.5](https://mvnrepository.com/artifact/org.aspectj/aspectjweaver/1.9.5)
+- [aspectjrt.jar - 1.9.5](https://mvnrepository.com/artifact/org.aspectj/aspectjrt/1.9.5)
+- [aspectjtools.jar - 1.9.5](aspectjtools.jar%20-%201.9.5)
