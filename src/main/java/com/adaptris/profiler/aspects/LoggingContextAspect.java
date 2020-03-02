@@ -30,10 +30,9 @@ public class LoggingContextAspect {
   public static final String MESSAGE_ID_CONTEXT = "messageId";
   public static final String PARENT_ID_CONTEXT = "parentMessageId";
   
-  @Before("(call(void doService(com.adaptris.core.AdaptrisMessage)) "
-      + "|| call(void onAdaptrisMessage(com.adaptris.core.AdaptrisMessage)) "
-      + "|| call(void onAdaptrisMessage(com.adaptris.core.AdaptrisMessage, java.util.function.Consumer))) "
-      + "&& within(com.adaptris..*)")
+  @Before("call(* com.adaptris.core.Service+.doService(com.adaptris.core.AdaptrisMessage)) "
+      + "|| call(* com.adaptris.core.AdaptrisMessageListener+.onAdaptrisMessage(com.adaptris.core.AdaptrisMessage)) "
+      + "|| call(* com.adaptris.core.AdaptrisMessageListener+.onAdaptrisMessage(com.adaptris.core.AdaptrisMessage, java.util.function.Consumer))")
   public synchronized void beforeService(JoinPoint jp) {
     AdaptrisMessage msg = (AdaptrisMessage) jp.getArgs()[0];
     String msgId = msg.getUniqueId();
