@@ -43,4 +43,12 @@ public class LoggingContextAspect {
       MDC.put(PARENT_ID_CONTEXT, parentId);
     }    
   }
+
+  // Before PollerImp#processMessages() we wipe out the diagnostic context
+  // Which means the context is cleared for internal threads in the context of AdaptrisPollingConsumer
+  @Before("call(* com.adaptris.core.PollerImp+.processMessages())")
+  public synchronized void beforeProcessMessages(JoinPoint jp) {
+    MDC.remove(MESSAGE_ID_CONTEXT);
+    MDC.remove(PARENT_ID_CONTEXT);
+  }
 }
