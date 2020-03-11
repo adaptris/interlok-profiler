@@ -1,0 +1,6 @@
+<aspectj>
+    <aspects>
+        <aspect name="com.adaptris.profiler.aspects.LoggingContextAspect"/>
+    </aspects>
+    <weaver options="-XmessageHandlerClass:com.adaptris.profiler.util.QuietLogger"/>
+</aspectj>
