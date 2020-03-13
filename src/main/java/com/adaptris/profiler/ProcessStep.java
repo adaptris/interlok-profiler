@@ -90,4 +90,14 @@ public interface ProcessStep {
   
   public void setTimeStartedNanos(long time);
   
+  /**
+   * Did this step produce an error?
+   * 
+   * @return true if the {@link AdaptrisMessage} is deemed to have failed this step.
+   */
+  public boolean isFailed();
+  
+  public void setFailed(boolean time);
+  
+  
 }
