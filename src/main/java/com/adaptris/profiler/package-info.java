@@ -1,5 +1,5 @@
-<body>
-	<p>Base package for AspectJ profiling of the adapter</p>
+/** Base package for AspectJ profiling of the adapter.
+
 	<p>Using the profiler will require {@code aspectjweaver} to be
 		listed as a javaagent when starting the JVM. The recommendation is to
 		not use the bundled wrapper executables, and to roll your own script
@@ -38,8 +38,9 @@ JAVA_ARGS="-server -XX:+UseConcMarkSweepGC -XX:+UseParNewGC"
 
 $JAVA_HOME/bin/java -javaagent:./lib/aspectjweaver.jar \
   -Dorg.aspectj.weaver.loadtime.configuration=META-INF/profiler-aop.xml -cp "$LOCALCLASSPATH" $JAVA_ARGS \
-  com.adaptris.core.management.SimpleBootstrap bootstap.properties  
+  com.adaptris.core.management.SimpleBootstrap bootstap.properties
   </pre>
 		</code>
 	</p>
-</body>
+*/
+package com.adaptris.profiler;
