@@ -27,6 +27,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 
 import com.adaptris.core.AdaptrisMessage;
+import com.adaptris.core.CoreConstants;
 import com.adaptris.core.Workflow;
 import com.adaptris.core.WorkflowImp;
 import com.adaptris.profiler.MessageProcessStep;
@@ -67,7 +68,10 @@ public class WorkflowAspect extends BaseAspect {
       // Step will only be null, if we've had an error in the beforeService
       if (step != null) {
         super.recordEventTimeTaken(step);
-
+        AdaptrisMessage message = (AdaptrisMessage) jp.getArgs()[1];
+        if(message.getObjectHeaders().containsKey(CoreConstants.OBJ_METADATA_EXCEPTION))
+          step.setFailed(true);
+        
         waitingForCompletion.remove(key);
         this.sendEvent(step);
         log("After Workflow", jp);

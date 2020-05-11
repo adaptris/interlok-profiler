@@ -31,6 +31,7 @@ public class MessageProcessStep implements ProcessStep, Serializable {
   private long timeStartedMs;
   private long timeTakenNanos;
   private long timeStartedNanos;
+  private boolean failed;
     
   @Override
   public void setTimeTakenMs(long time) {
@@ -141,5 +142,15 @@ public class MessageProcessStep implements ProcessStep, Serializable {
   @Override
   public void setTimeStartedNanos(long timeStarted) {
     this.timeStartedNanos = timeStarted;
+  }
+
+  @Override
+  public boolean isFailed() {
+    return failed;
+  }
+
+  @Override
+  public void setFailed(boolean failed) {
+    this.failed = failed;
   }
 }
