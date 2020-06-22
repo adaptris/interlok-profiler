@@ -227,8 +227,8 @@ publishing {
         properties.appendNode("target", "3.8.0+")
         properties.appendNode("tags", "profiling")
         properties.appendNode("license", "false")
-        properties.appendNode("repository", "https://github.com/adaptris/interlok-profiler")		
-        properties.appendNode("readme", "https://raw.githubusercontent.com/adaptris/interlok-profiler/develop/README.md")		
+        properties.appendNode("repository", "https://github.com/adaptris/interlok-profiler")
+        properties.appendNode("readme", "https://github.com/adaptris/interlok-profiler/raw/develop/README.md")
       }
     }
   }
