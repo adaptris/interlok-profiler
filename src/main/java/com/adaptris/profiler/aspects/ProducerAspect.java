@@ -25,8 +25,10 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 
 import com.adaptris.core.AdaptrisMessage;
+import com.adaptris.core.CoreConstants;
 import com.adaptris.profiler.MessageProcessStep;
 import com.adaptris.profiler.ProcessStep;
+import com.adaptris.profiler.ReflectionHelper;
 import com.adaptris.profiler.StepType;
 
 @Aspect
@@ -34,31 +36,39 @@ public class ProducerAspect extends BaseAspect {
 
   private static Map<String, ProcessStep> waitingForCompletion = new HashMap<String, ProcessStep>();
 
-  @Before("call(void produce(com.adaptris.core.AdaptrisMessage, com.adaptris.core.ProduceDestination)) && within(com.adaptris..*)")
+  @Before("call(void produce(com.adaptris.core.AdaptrisMessage)) && within(com.adaptris..*)")
   public synchronized void beforeService(JoinPoint jp) {
     try {
       AdaptrisMessage message = (AdaptrisMessage) jp.getArgs()[0];
-      MessageProcessStep step = createStep(StepType.PRODUCER, jp.getTarget(), message.getUniqueId());
-      super.recordEventStartTime(step);
-      
-      waitingForCompletion.put(generateStepKey(jp), step);
-      log("Before Produce", jp);
-    }
-    catch (Exception e) {
+      if (message.getMetadataValue(CoreConstants.EVENT_CLASS) == null) { // only for non-event produced messages.
+        if (ReflectionHelper.getUniqueId(jp.getTarget()) != null) { // won't deal with producers that have no unique-id.
+          MessageProcessStep step = createStep(StepType.PRODUCER, jp.getTarget(), message.getUniqueId());
+          super.recordEventStartTime(step);
+
+          waitingForCompletion.put(generateStepKey(jp), step);
+          log("Before Produce", jp);
+        }
+      }
+    } catch (Exception e) {
       log.error("", e);
     }
   }
 
-  @After("call(void produce(com.adaptris.core.AdaptrisMessage, com.adaptris.core.ProduceDestination)) && within(com.adaptris..*)")
+  @After("call(void produce(com.adaptris.core.AdaptrisMessage)) && within(com.adaptris..*)")
   public synchronized void afterService(JoinPoint jp) {
-    String key = generateStepKey(jp);
-    ProcessStep step = waitingForCompletion.get(key);
-    if (step != null) {
-      super.recordEventTimeTaken(step);
-      
-      waitingForCompletion.remove(key);
-      sendEvent(step);
-      log("After Produce", jp);
+    AdaptrisMessage message = (AdaptrisMessage) jp.getArgs()[0];
+    if (message.getMetadataValue(CoreConstants.EVENT_CLASS) == null) { // only for non-event produced messages.
+      if (ReflectionHelper.getUniqueId(jp.getTarget()) != null) { // won't deal with producers that have no unique-id.
+        String key = generateStepKey(jp);
+        ProcessStep step = waitingForCompletion.get(key);
+        if (step != null) {
+          super.recordEventTimeTaken(step);
+
+          waitingForCompletion.remove(key);
+          sendEvent(step);
+          log("After Produce", jp);
+        }
+      }
     }
   }
 }
