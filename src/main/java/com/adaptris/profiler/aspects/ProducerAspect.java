@@ -36,7 +36,7 @@ public class ProducerAspect extends BaseAspect {
 
   private static Map<String, ProcessStep> waitingForCompletion = new HashMap<String, ProcessStep>();
 
-  @Before("call(void produce(com.adaptris.core.AdaptrisMessage)) && within(com.adaptris..*)")
+  @Before("(call(void produce(com.adaptris.core.AdaptrisMessage)) || call(com.adaptris.core.AdaptrisMessage request(com.adaptris.core.AdaptrisMessage))) && within(com.adaptris..*)")
   public synchronized void beforeService(JoinPoint jp) {
     try {
       AdaptrisMessage message = (AdaptrisMessage) jp.getArgs()[0];
@@ -54,7 +54,7 @@ public class ProducerAspect extends BaseAspect {
     }
   }
 
-  @After("call(void produce(com.adaptris.core.AdaptrisMessage)) && within(com.adaptris..*)")
+  @After("(call(void produce(com.adaptris.core.AdaptrisMessage)) || call(com.adaptris.core.AdaptrisMessage request(com.adaptris.core.AdaptrisMessage))) && within(com.adaptris..*)")
   public synchronized void afterService(JoinPoint jp) {
     AdaptrisMessage message = (AdaptrisMessage) jp.getArgs()[0];
     if (message.getMetadataValue(CoreConstants.EVENT_CLASS) == null) { // only for non-event produced messages.
