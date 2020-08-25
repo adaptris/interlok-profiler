@@ -32,7 +32,8 @@ public class LoggingContextAspect {
   
   @Before("call(* com.adaptris.core.Service+.doService(com.adaptris.core.AdaptrisMessage)) "
       + "|| call(* com.adaptris.core.AdaptrisMessageListener+.onAdaptrisMessage(com.adaptris.core.AdaptrisMessage)) "
-      + "|| call(* com.adaptris.core.AdaptrisMessageListener+.onAdaptrisMessage(com.adaptris.core.AdaptrisMessage, java.util.function.Consumer))")
+      + "|| call(* com.adaptris.core.AdaptrisMessageListener+.onAdaptrisMessage(com.adaptris.core.AdaptrisMessage, java.util.function.Consumer)) "
+      + "|| call(* com.adaptris.core.AdaptrisMessageListener+.onAdaptrisMessage(com.adaptris.core.AdaptrisMessage, java.util.function.Consumer, java.util.function.Consumer))")
   public synchronized void beforeService(JoinPoint jp) {
     AdaptrisMessage msg = (AdaptrisMessage) jp.getArgs()[0];
     String msgId = msg.getUniqueId();
