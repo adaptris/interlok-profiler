@@ -1,4 +1,4 @@
-# interlok-profiler [![GitHub tag](https://img.shields.io/github/tag/adaptris/interlok-profiler.svg)](https://github.com/adaptris/interlok-profiler/tags) [![Build Status](https://travis-ci.org/adaptris/interlok-profiler.svg?branch=develop)](https://travis-ci.org/adaptris/interlok-profiler) [![codecov](https://codecov.io/gh/adaptris/interlok-profiler/branch/develop/graph/badge.svg)](https://codecov.io/gh/adaptris/interlok-profiler) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a04aaca3525a4c9083e15be97e99baeb)](https://www.codacy.com/app/adaptris/interlok-profiler?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=adaptris/interlok-profiler&amp;utm_campaign=Badge_Grade)
+# interlok-profiler [![GitHub tag](https://img.shields.io/github/tag/adaptris/interlok-profiler.svg)](https://github.com/adaptris/interlok-profiler/tags) [![codecov](https://codecov.io/gh/adaptris/interlok-profiler/branch/develop/graph/badge.svg)](https://codecov.io/gh/adaptris/interlok-profiler)
 
 The source code contains a client and server component.
 
