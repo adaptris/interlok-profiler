@@ -108,6 +108,8 @@ dependencies {
   compile ("com.adaptris:interlok-core:$interlokCoreVersion") { changing= true}
   compile ("com.adaptris:interlok-common:$interlokCoreVersion") { changing= true}
 
+  compile ("org.apache.commons:commons-math3:3.6.1")
+
   compile ("org.slf4j:slf4j-api:$slf4jVersion")
 
   compile ("org.aspectj:aspectjrt:$aspectjVersion")
