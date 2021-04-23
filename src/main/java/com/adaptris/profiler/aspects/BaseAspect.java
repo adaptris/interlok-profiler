@@ -27,27 +27,26 @@ import com.adaptris.profiler.MessageProcessStep;
 import com.adaptris.profiler.ProcessStep;
 import com.adaptris.profiler.ReflectionHelper;
 import com.adaptris.profiler.StepType;
-import com.adaptris.profiler.client.EventReceiver;
-import com.adaptris.profiler.client.PluginFactory;
+import com.adaptris.profiler.jmx.EventReceiverToJMX;
 
 abstract class BaseAspect {
 
   private static final ExecutorService threadPool = Executors.newCachedThreadPool();
   private StepIncrementor sequenceGenerator = new MessageStepIncrementor();
   protected transient Logger log = LoggerFactory.getLogger(this.getClass());
+  private static EventReceiverToJMX receiver = new EventReceiverToJMX();
 
   public BaseAspect() {
+    
   }
 
   protected void sendEvent(final ProcessStep step) {
-    for (final EventReceiver receiver : PluginFactory.getInstance().getPlugin().getReceivers()) {
-      threadPool.execute(new Runnable() {
-        public void run() {
-          Thread.currentThread().setName("Profiler-Event@" + hashCode());
-          receiver.onEvent(step);
-        }
-      });
-    }
+    threadPool.execute(new Runnable() {
+      public void run() {
+        Thread.currentThread().setName("Profiler-Event@" + hashCode());
+        receiver.onEvent(step);
+      }
+    });
   }
 
   protected long getNextSequenceNumber(String msgId) {
