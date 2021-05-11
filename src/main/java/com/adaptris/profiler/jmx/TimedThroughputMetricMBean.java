@@ -4,6 +4,10 @@ public interface TimedThroughputMetricMBean {
   
   public String getUniqueId();
   
+  public void setWorkflowId(String workflowId);
+  
+  public String getWorkflowId();
+  
   public void setUniqueId(String uniqueId);
 
   public long getMessageCount();
@@ -17,4 +21,5 @@ public interface TimedThroughputMetricMBean {
   public long getAverageNanoseconds();
   
   public void addToAverageNanoseconds(long nanoseconds);
+  
 }
