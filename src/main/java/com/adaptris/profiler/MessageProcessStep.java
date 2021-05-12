@@ -18,75 +18,46 @@ package com.adaptris.profiler;
 
 import java.io.Serializable;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class MessageProcessStep implements ProcessStep, Serializable {
 
   private static final long serialVersionUID = 201310141247L;
 
+  @Getter
+  @Setter
   private String messageId;
+  @Getter
+  @Setter
   private String stepName;
+  @Getter
+  @Setter
   private String stepInstanceId;
+  @Getter
+  @Setter
+  private String workflowId;
+  @Getter
+  @Setter
   private StepType stepType;
+  @Getter
+  @Setter
   private long order;
+  @Getter
+  @Setter
   private long timeTakenMs;
+  @Getter
+  @Setter
   private long timeStartedMs;
+  @Getter
+  @Setter
   private long timeTakenNanos;
+  @Getter
+  @Setter
   private long timeStartedNanos;
+  @Getter
+  @Setter
   private boolean failed;
-    
-  @Override
-  public void setTimeTakenMs(long time) {
-    this.timeTakenMs = time;
-  }
-  
-  @Override
-  public long getTimeTakenMs() {
-    return timeTakenMs;
-  }
-  
-  @Override
-  public String getStepName() {
-    return stepName;
-  }
-
-  @Override
-  public String getStepInstanceId() {
-    return stepInstanceId;
-  }
-
-  @Override
-  public String getMessageId() {
-    return messageId;
-  }
-
-  public void setMessageId(String messageId) {
-    this.messageId = messageId;
-  }
-
-  public void setStepName(String stepName) {
-    this.stepName = stepName;
-  }
-
-  public void setStepInstanceId(String stepInstanceId) {
-    this.stepInstanceId = stepInstanceId;
-  }
-
-  @Override
-  public StepType getStepType() {
-    return stepType;
-  }
-
-  public void setStepType(StepType stepType) {
-    this.stepType = stepType;
-  }
-
-  @Override
-  public long getOrder() {
-    return order;
-  }
-
-  public void setOrder(long order) {
-    this.order = order;
-  }
 
   @Override
   public boolean equals(Object object) {
@@ -114,43 +85,4 @@ public class MessageProcessStep implements ProcessStep, Serializable {
     return buffer.toString();
   }
 
-  @Override
-  public long getTimeStarted() {
-    return timeStartedMs;
-  }
-  
-  @Override
-  public void setTimeStarted(long timeStarted) {
-    this.timeStartedMs = timeStarted;
-  }
-
-  @Override
-  public long getTimeTakenNanos() {
-    return this.timeTakenNanos;
-  }
-
-  @Override
-  public void setTimeTakenNanos(long time) {
-    this.timeTakenNanos = time;
-  }
-
-  @Override
-  public long getTimeStartedNanos() {
-    return this.timeStartedNanos;
-  }
-  
-  @Override
-  public void setTimeStartedNanos(long timeStarted) {
-    this.timeStartedNanos = timeStarted;
-  }
-
-  @Override
-  public boolean isFailed() {
-    return failed;
-  }
-
-  @Override
-  public void setFailed(boolean failed) {
-    this.failed = failed;
-  }
 }

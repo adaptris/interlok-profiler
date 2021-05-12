@@ -45,13 +45,14 @@ public class EventReceiverToJMX implements EventReceiver {
 
   private TimedThroughputMetricMBean getOrCreateMBean(ProcessStep processStep) throws Exception {
     TimedThroughputMetricMBean metricMbean = null;
-    metricMbean = beanCache.get(processStep.getStepInstanceId());
+    metricMbean = beanCache.get(processStep.getWorkflowId() + ":" + processStep.getStepInstanceId());
     
     if(metricMbean == null) {
       metricMbean = new TimedThroughputMetric();
       metricMbean.setUniqueId(processStep.getStepInstanceId());
+      metricMbean.setWorkflowId(processStep.getWorkflowId());
       
-      beanCache.put(processStep.getStepInstanceId(), metricMbean);
+      beanCache.put(processStep.getWorkflowId() + ":" + processStep.getStepInstanceId(), metricMbean);
       
       JmxHelper.register(
           new ObjectName(JMX_OBJECT_NAME.replace("$1", processStep.getStepType().name().toLowerCase()).replace("$2", processStep.getStepInstanceId())), 

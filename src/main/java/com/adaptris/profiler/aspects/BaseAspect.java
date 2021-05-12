@@ -31,6 +31,8 @@ import com.adaptris.profiler.jmx.EventReceiverToJMX;
 
 abstract class BaseAspect {
 
+  protected static final String WORKFLOW_ID_KEY = "AdaptrisWorkflowEntryID";
+  
   private static final ExecutorService threadPool = Executors.newCachedThreadPool();
   private StepIncrementor sequenceGenerator = new MessageStepIncrementor();
   protected transient Logger log = LoggerFactory.getLogger(this.getClass());
@@ -53,13 +55,14 @@ abstract class BaseAspect {
     return sequenceGenerator.generate(msgId);
   }
 
-  protected MessageProcessStep createStep(StepType type, Object o, String messageId) {
+  protected MessageProcessStep createStep(StepType type, Object o, String messageId, String workflowId) {
     MessageProcessStep step = new MessageProcessStep();
     step.setMessageId(messageId);
     step.setStepType(type);
     step.setOrder(getNextSequenceNumber(messageId));
     step.setStepName(o.getClass().getSimpleName());
     step.setStepInstanceId(ReflectionHelper.getUniqueId(o));
+    step.setWorkflowId(workflowId);
     return step;
   }
 
@@ -76,12 +79,12 @@ abstract class BaseAspect {
   }
   
   protected void recordEventStartTime(ProcessStep processStep) {
-    processStep.setTimeStarted(System.currentTimeMillis());
+    processStep.setTimeStartedMs(System.currentTimeMillis());
     processStep.setTimeStartedNanos(System.nanoTime());
   }
   
   protected void recordEventTimeTaken(ProcessStep processStep) {
-    long differenceMs = System.currentTimeMillis() - processStep.getTimeStarted();
+    long differenceMs = System.currentTimeMillis() - processStep.getTimeStartedMs();
     processStep.setTimeTakenMs(differenceMs);
     long differenceNanos = System.nanoTime() - processStep.getTimeStartedNanos();
     processStep.setTimeTakenNanos(differenceNanos);
