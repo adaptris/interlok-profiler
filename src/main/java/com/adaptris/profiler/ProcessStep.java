@@ -26,9 +26,9 @@ public interface ProcessStep {
   public String getStepName();
   
   /**
-   * Get the name of the step which is generally the classname of the component.
+   * Get the unique-id of the parent workflow.
    * 
-   * @return the step name.
+   * @return the workflow id.
    */
   public String getWorkflowId();
   
