@@ -26,6 +26,13 @@ public interface ProcessStep {
   public String getStepName();
   
   /**
+   * Get the unique-id of the parent workflow.
+   * 
+   * @return the workflow id.
+   */
+  public String getWorkflowId();
+  
+  /**
    * Get the id of the step instance.
    * 
    * @return the instance id; generally the unique id of the component.
@@ -77,9 +84,9 @@ public interface ProcessStep {
    * 
    * @return when the process step was started; represented by {@link System#currentTimeMillis()}
    */
-  public long getTimeStarted();
+  public long getTimeStartedMs();
   
-  public void setTimeStarted(long time);
+  public void setTimeStartedMs(long time);
   
   /**
    * Get when the process step was started.

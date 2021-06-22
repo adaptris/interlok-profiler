@@ -37,18 +37,23 @@ import com.adaptris.profiler.StepType;
 @Aspect
 public class WorkflowAspect extends BaseAspect {
 
+  private static final String WORKFLOW_ENTRY_START_KEY = "AdaptrisWorkflowEntryTimestamp"; 
+  
   private static Map<String, ProcessStep> waitingForCompletion = new HashMap<String, ProcessStep>();
 
   @Before("call(void workflowStart(com.adaptris.core.AdaptrisMessage)) && within(com.adaptris..*)")
   public synchronized void beforeService(JoinPoint jp) {
     try {
       if(jp.getTarget() instanceof Workflow) {
+        Workflow wf = ((WorkflowImp) jp.getTarget());
+        
         AdaptrisMessage message = (AdaptrisMessage) jp.getArgs()[0];
         Date now = new Date();
-        message.addMetadata("AdaptrisWorkflowEntryTimestamp", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").format(now));
+        message.addMetadata(WORKFLOW_ENTRY_START_KEY, new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").format(now));
+        message.addMetadata(WORKFLOW_ID_KEY, wf.obtainWorkflowId());
         
-        sendEvent(createStep(StepType.CONSUMER, ((WorkflowImp) jp.getTarget()).getConsumer(), message.getUniqueId()));
-        MessageProcessStep workflowStep = createStep(StepType.WORKFLOW, jp.getTarget(), message.getUniqueId());
+        sendEvent(createStep(StepType.CONSUMER,wf.getConsumer(), message.getUniqueId(), wf.obtainWorkflowId()));
+        MessageProcessStep workflowStep = createStep(StepType.WORKFLOW, wf, message.getUniqueId(), wf.obtainWorkflowId());
         super.recordEventStartTime(workflowStep);
         
         waitingForCompletion.put(generateStepKey(jp), workflowStep);

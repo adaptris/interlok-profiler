@@ -42,7 +42,7 @@ public class ProducerAspect extends BaseAspect {
       AdaptrisMessage message = (AdaptrisMessage) jp.getArgs()[0];
       if (message.getMetadataValue(CoreConstants.EVENT_CLASS) == null) { // only for non-event produced messages.
         if (ReflectionHelper.getUniqueId(jp.getTarget()) != null) { // won't deal with producers that have no unique-id.
-          MessageProcessStep step = createStep(StepType.PRODUCER, jp.getTarget(), message.getUniqueId());
+          MessageProcessStep step = createStep(StepType.PRODUCER, jp.getTarget(), message.getUniqueId(), message.getMetadataValue(WORKFLOW_ID_KEY));
           super.recordEventStartTime(step);
 
           waitingForCompletion.put(generateStepKey(jp), step);

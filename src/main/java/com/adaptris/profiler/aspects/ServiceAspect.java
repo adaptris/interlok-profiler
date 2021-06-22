@@ -39,7 +39,7 @@ public class ServiceAspect extends BaseAspect {
     try {
       AdaptrisMessage message = (AdaptrisMessage) jp.getArgs()[0];
 
-      MessageProcessStep step = createStep(StepType.SERVICE, jp.getTarget(), message.getUniqueId());
+      MessageProcessStep step = createStep(StepType.SERVICE, jp.getTarget(), message.getUniqueId(), message.getMetadataValue(WORKFLOW_ID_KEY));
       super.recordEventStartTime(step);
       
       waitingForCompletion.put(generateStepKey(jp), step);
