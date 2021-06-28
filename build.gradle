@@ -38,7 +38,7 @@ ext {
   slf4jVersion = '1.7.31'
   tikaVersion = "1.26"
   mockitoVersion = '3.10.0'
-  aspectjVersion = '1.9.6'
+  aspectjVersion = '1.9.7'
 }
 
 if (JavaVersion.current().isJava8Compatible()) {
