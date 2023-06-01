@@ -21,6 +21,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.slf4j.MDC;
+
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.CoreConstants;
 
@@ -29,7 +30,7 @@ public class LoggingContextAspect {
 
   public static final String MESSAGE_ID_CONTEXT = "messageId";
   public static final String PARENT_ID_CONTEXT = "parentMessageId";
-  
+
   @Before("call(* com.adaptris.core.Service+.doService(com.adaptris.core.AdaptrisMessage)) "
       + "|| call(* com.adaptris.core.AdaptrisMessageListener+.onAdaptrisMessage(com.adaptris.core.AdaptrisMessage)) "
       + "|| call(* com.adaptris.core.AdaptrisMessageListener+.onAdaptrisMessage(com.adaptris.core.AdaptrisMessage, java.util.function.Consumer)) "
@@ -37,11 +38,11 @@ public class LoggingContextAspect {
   public synchronized void beforeService(JoinPoint jp) {
     AdaptrisMessage msg = (AdaptrisMessage) jp.getArgs()[0];
     String msgId = msg.getUniqueId();
-    String parentId = msg.getMetadataValue(CoreConstants.PARENT_UNIQUE_ID_KEY);    
+    String parentId = msg.getMetadataValue(CoreConstants.PARENT_UNIQUE_ID_KEY);
     MDC.put(MESSAGE_ID_CONTEXT, msgId);
     if (StringUtils.isNotEmpty(parentId)) {
       MDC.put(PARENT_ID_CONTEXT, parentId);
-    }    
+    }
   }
 
   // Before PollerImp#processMessages() we wipe out the diagnostic context
@@ -51,4 +52,5 @@ public class LoggingContextAspect {
     MDC.remove(MESSAGE_ID_CONTEXT);
     MDC.remove(PARENT_ID_CONTEXT);
   }
+
 }

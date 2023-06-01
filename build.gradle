@@ -10,7 +10,6 @@ plugins {
   id 'com.github.spotbugs' version '5.0.14'
   id "io.freefair.lombok" version "6.5.1"
   id 'org.owasp.dependencycheck' version '8.2.1'
-
 }
 
 ext {
@@ -66,8 +65,8 @@ ext.buildInfo = { ->
     }
 }
 
-sourceCompatibility = JavaVersion.VERSION_11
-targetCompatibility = JavaVersion.VERSION_11
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
 group   = 'com.adaptris'
 version = releaseVersion
 def versionDir = "$buildDir/version"
@@ -143,16 +142,14 @@ dependencies {
 
   annotationProcessor ("com.adaptris:interlok-core-apt:$interlokCoreVersion") {changing= true}
 
-  testImplementation ('junit:junit:4.13.2')
+  testImplementation ("org.junit.jupiter:junit-jupiter-engine:5.9.3")
   testImplementation ("org.slf4j:slf4j-simple:$slf4jVersion")
   testImplementation ("com.adaptris:interlok-stubs:$interlokCoreVersion") { changing= true }
 
   javadoc("com.adaptris:interlok-core-apt:$interlokCoreVersion") { changing= true}
   offlineJavadocPackages ("com.adaptris:interlok-core:$interlokCoreVersion:javadoc@jar") { changing= true}
   offlineJavadocPackages ("com.adaptris:interlok-common:$interlokCoreVersion:javadoc@jar") { changing= true}
-
 }
-
 
 jar {
   manifest {
@@ -165,12 +162,12 @@ jar {
   }
 }
 
-
 sourceSets {
   main {
     output.dir(versionDir, builtBy: 'generateVersion')
   }
 }
+
 // Generate the META-INF/adaptris-version file
 task generateVersion {
   doLast {
@@ -214,10 +211,10 @@ javadoc {
 }
 
 jacocoTestReport {
-    reports {
-        xml.required= true
-        html.required= true
-    }
+  reports {
+    xml.required= true
+    html.required= true
+  }
 }
 
 task deleteGeneratedFiles(type: Delete) {
@@ -248,8 +245,8 @@ task examplesJar(type: Jar, dependsOn: test) {
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.extensions.delombokTask
+  classifier = 'sources'
+  from sourceSets.main.extensions.delombokTask
 }
 
 artifacts {
@@ -316,8 +313,13 @@ dependencyCheck  {
   }
 }
 
+test {
+  useJUnitPlatform()
+}
+
 // disable spotbugsTests which checks our test code..
 spotbugsTest.enabled = false
+
 clean.dependsOn deleteGeneratedFiles
 check.dependsOn jacocoTestReport
 javadoc.dependsOn offlinePackageList
