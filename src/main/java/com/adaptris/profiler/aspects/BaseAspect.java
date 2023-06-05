@@ -32,22 +32,20 @@ import com.adaptris.profiler.jmx.EventReceiverToJMX;
 abstract class BaseAspect {
 
   protected static final String WORKFLOW_ID_KEY = "AdaptrisWorkflowEntryID";
-  
+
   private static final ExecutorService threadPool = Executors.newCachedThreadPool();
   private StepIncrementor sequenceGenerator = new MessageStepIncrementor();
   protected transient Logger log = LoggerFactory.getLogger(this.getClass());
   private static EventReceiverToJMX receiver = new EventReceiverToJMX();
 
   public BaseAspect() {
-    
+
   }
 
   protected void sendEvent(final ProcessStep step) {
-    threadPool.execute(new Runnable() {
-      public void run() {
-        Thread.currentThread().setName("Profiler-Event@" + hashCode());
-        receiver.onEvent(step);
-      }
+    threadPool.execute(() -> {
+      Thread.currentThread().setName("Profiler-Event@" + hashCode());
+      receiver.onEvent(step);
     });
   }
 
@@ -77,12 +75,12 @@ abstract class BaseAspect {
     log.trace("{} ({}({})) : {}", prefix, jp.getTarget().getClass().getSimpleName(), ReflectionHelper.getUniqueId(jp.getTarget()),
         ReflectionHelper.getUniqueId(jp.getArgs()[0]));
   }
-  
+
   protected void recordEventStartTime(ProcessStep processStep) {
     processStep.setTimeStartedMs(System.currentTimeMillis());
     processStep.setTimeStartedNanos(System.nanoTime());
   }
-  
+
   protected void recordEventTimeTaken(ProcessStep processStep) {
     long differenceMs = System.currentTimeMillis() - processStep.getTimeStartedMs();
     processStep.setTimeTakenMs(differenceMs);

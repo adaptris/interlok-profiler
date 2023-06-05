@@ -34,7 +34,7 @@ import com.adaptris.profiler.StepType;
 @Aspect
 public class ProducerAspect extends BaseAspect {
 
-  private static Map<String, ProcessStep> waitingForCompletion = new HashMap<String, ProcessStep>();
+  private static Map<String, ProcessStep> waitingForCompletion = new HashMap<>();
 
   @Before("(call(void produce(com.adaptris.core.AdaptrisMessage)) || call(com.adaptris.core.AdaptrisMessage request(com.adaptris.core.AdaptrisMessage))) && within(com.adaptris..*)")
   public synchronized void beforeService(JoinPoint jp) {
@@ -42,7 +42,8 @@ public class ProducerAspect extends BaseAspect {
       AdaptrisMessage message = (AdaptrisMessage) jp.getArgs()[0];
       if (message.getMetadataValue(CoreConstants.EVENT_CLASS) == null) { // only for non-event produced messages.
         if (ReflectionHelper.getUniqueId(jp.getTarget()) != null) { // won't deal with producers that have no unique-id.
-          MessageProcessStep step = createStep(StepType.PRODUCER, jp.getTarget(), message.getUniqueId(), message.getMetadataValue(WORKFLOW_ID_KEY));
+          MessageProcessStep step = createStep(StepType.PRODUCER, jp.getTarget(), message.getUniqueId(),
+              message.getMetadataValue(WORKFLOW_ID_KEY));
           super.recordEventStartTime(step);
 
           waitingForCompletion.put(generateStepKey(jp), step);
@@ -71,4 +72,5 @@ public class ProducerAspect extends BaseAspect {
       }
     }
   }
+
 }

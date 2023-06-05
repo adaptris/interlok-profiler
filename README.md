@@ -31,6 +31,6 @@ This script will force the instrumentation of Interlok before launching it.
 
 ## Dependant jar files
 
-- [aspectjwearver.jar - 1.9.5](https://mvnrepository.com/artifact/org.aspectj/aspectjweaver/1.9.5)
-- [aspectjrt.jar - 1.9.5](https://mvnrepository.com/artifact/org.aspectj/aspectjrt/1.9.5)
-- [aspectjtools.jar - 1.9.5](aspectjtools.jar%20-%201.9.5)
+- [aspectjwearver.jar - 1.9.19](https://mvnrepository.com/artifact/org.aspectj/aspectjweaver/1.9.19)
+- [aspectjrt.jar - 1.9.5](https://mvnrepository.com/artifact/org.aspectj/aspectjrt/1.9.19)
+- [aspectjtools.jar - 1.9.19](aspectjtools.jar%20-%201.9.19)

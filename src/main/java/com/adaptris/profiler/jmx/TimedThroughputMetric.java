@@ -10,7 +10,7 @@ public class TimedThroughputMetric implements TimedThroughputMetricMBean {
   @Getter
   @Setter
   private String uniqueId;
-  
+
   @Getter
   @Setter
   private String workflowId;
@@ -18,17 +18,17 @@ public class TimedThroughputMetric implements TimedThroughputMetricMBean {
   @Getter
   @Setter
   private long messageCount, failedMessageCount;
-  
+
   private DescriptiveStatistics averageNanos = new DescriptiveStatistics(100);
 
   @Override
   public void addToMessageCount() {
-    messageCount ++;
+    messageCount++;
   }
 
   @Override
   public void addToFailedMessageCount() {
-    failedMessageCount ++;
+    failedMessageCount++;
   }
 
   @Override
@@ -40,4 +40,5 @@ public class TimedThroughputMetric implements TimedThroughputMetricMBean {
   public long getAverageNanoseconds() {
     return Double.valueOf(averageNanos.getMean()).longValue();
   }
+
 }
