@@ -9,10 +9,10 @@
 		the aspects</p>
 
 	<p>
-		By default, the profiler does ot do anything other than inject aspects
+		By default, the profiler does not do anything other than inject aspects
 		at the appropriate places for Workflow/Service/Producer. In order to
 		get meaningful information you will need a concrete implementation of
-		{@link com.adaptris.profiler.client.PluginFactory} which needs to be
+		link com.adaptris.profiler.client.PluginFactory which needs to be
 		specified in the file {@code interlok-profiler.properties} (this should be
 		available on the classpath).
 		<code>

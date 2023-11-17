@@ -61,27 +61,30 @@ public class MessageProcessStep implements ProcessStep, Serializable {
 
   @Override
   public boolean equals(Object object) {
-    if (object == this) return true;
-    if(object instanceof MessageProcessStep) {
-      MessageProcessStep other  = (MessageProcessStep) object;
-      return (this.getStepInstanceId().equals(other.getStepInstanceId()));
-    } else
+    if (object == this) {
+      return true;
+    }
+    if (object instanceof MessageProcessStep) {
+      MessageProcessStep other = (MessageProcessStep) object;
+      return getStepInstanceId().equals(other.getStepInstanceId());
+    } else {
       return false;
+    }
   }
-  
+
   @Override
   public int hashCode() {
     return getStepInstanceId().hashCode();
   }
-  
+
   @Override
   public String toString() {
     StringBuffer buffer = new StringBuffer();
-    buffer.append("MessageId - " + this.getMessageId() + "\n");
-    buffer.append("Event class - " + this.getStepName() + "\n");
-    buffer.append("Class instance - " + this.getStepInstanceId() + "\n");
-    buffer.append("Message processed in (ms): " + this.getTimeTakenMs());
-    
+    buffer.append("MessageId - " + getMessageId() + "\n");
+    buffer.append("Event class - " + getStepName() + "\n");
+    buffer.append("Class instance - " + getStepInstanceId() + "\n");
+    buffer.append("Message processed in (ms): " + getTimeTakenMs());
+
     return buffer.toString();
   }
 

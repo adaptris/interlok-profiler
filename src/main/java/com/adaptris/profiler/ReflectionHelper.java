@@ -22,15 +22,13 @@ public class ReflectionHelper {
 
   /**
    * Get the uniqueID of a component.
-   * 
-   * @param obj the object.
+   *
+   * @param obj
+   *          the object.
    * @return the result of {@code getUniqueId}, {@code getId} or null.
    */
   public static String getUniqueId(Object obj) {
-    String[] methods =
-    {
-        "getUniqueId", "getId"
-    };
+    String[] methods = { "getUniqueId", "getId" };
     String result = null;
     for (String method : methods) {
       try {
@@ -39,9 +37,8 @@ public class ReflectionHelper {
           result = s;
           break;
         }
-      }
-      catch (Exception e) {
-        ;
+      } catch (Exception e) {
+
       }
     }
     return result;
@@ -57,4 +54,5 @@ public class ReflectionHelper {
     }
     return result;
   }
+
 }
